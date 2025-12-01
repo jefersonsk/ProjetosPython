@@ -1,3 +1,5 @@
+from funcoes import verifica_primo
+
 # ENTRADA DE DADOS
 conta_primo = 1
 loop =  2
