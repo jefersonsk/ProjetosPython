@@ -1,13 +1,22 @@
 anterior = 0
 proximo = 1
 
-quantidade = int(input())
+try:
+    quantidade = int(input())
 
-print(anterior, proximo, end=' ')
+    if quantidade <=0:
+        raise ValueError("Erro 1")
+    
+except Exception (ValueError, TypeError):
+    print("ERRO: Dados digitados são inválidos!")
 
-for i in range(0, (quantidade -2)):
+else:
 
-    atual = anterior + proximo
-    print(atual, end=' ')
-    anterior = proximo
-    proximo = atual
+    print(anterior, proximo, end=' ')
+
+    for i in range(0, (quantidade -2)):
+
+        atual = anterior + proximo
+        print(atual, end=' ')
+        anterior = proximo
+        proximo = atual
