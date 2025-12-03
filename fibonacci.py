@@ -1,9 +1,18 @@
+def linha(tamanho = 42) -> str:
+    print("=" * tamanho)
+
+def cabecalho(texto: str, tamanho = 42) -> str:
+    linha()
+    print(texto.center(tamanho))
+    linha()
+
 anterior = 0
 proximo = 1
 flag = True
 
 while flag:
     try:
+        cabecalho('Cálculo Fibonacci')
         quantidade = int(input('Digite a quantidade: '))
 
         if quantidade <=0:
