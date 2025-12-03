@@ -4,7 +4,7 @@ flag = True
 
 while flag:
     try:
-        quantidade = int(input())
+        quantidade = int(input('Digite a quantidade: '))
 
         if quantidade <=0:
             raise ValueError("Erro 1")
@@ -12,7 +12,7 @@ while flag:
             flag = False
         
     except (ValueError, TypeError):
-        print("ERRO: Dados digitados são inválidos!")
+        print("\033[31mERRO: Dados digitados são inválidos!\033[m")
 
 else:
 
