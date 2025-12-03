@@ -13,6 +13,6 @@ while flag:
         print("Digite um valor positivo.")
     except ValueError:
         print("Você não pode digitar letras!")
-
-tempo = distancia * 2
-print(f"{tempo} minutos")
+    else:
+       tempo = distancia * 2
+       print(f"{tempo} minutos")
