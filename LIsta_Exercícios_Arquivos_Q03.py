@@ -1,4 +1,4 @@
-def pegar_quantidade(item: list) -> list:
+def pegar_quantidade(item: int) -> int:
     return item[1]
 
 contagem_times = {}
