@@ -9,6 +9,6 @@ with open("pessoas.csv", "r") as arquivo:
         dados_esportes.append([dados[0], dados[7].strip()])
        
         if dados_esportes[1].upper()== esporte:
-        lista_nomes.append[dados[0]]
+            lista_nomes.append[dados[0]]
 
 print(dados_esportes[1])
