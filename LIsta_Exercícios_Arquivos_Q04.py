@@ -8,6 +8,8 @@ with open("pessoas.csv", "r") as arquivo:
     for linha in arquivo:
         dados = linha.split(",")
         dados_pessoas.append([dados[0], dados[2]])
+
+arquivo.close()
         
 dados_pessoas.sort(key=verifica_idade)
 
