@@ -1,0 +1,1 @@
+data_retorno.strftime("%d/%m/%Y")
