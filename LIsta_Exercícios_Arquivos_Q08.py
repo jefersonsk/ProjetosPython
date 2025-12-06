@@ -1,4 +1,6 @@
 import os
+import csv
+
 from datetime import datetime
 
 def validar() -> str:
@@ -26,6 +28,27 @@ def cabecalho(texto: str) -> str:
     print(texto.center(60))
     print(linha_cabecalho())
 
+def valida_numero(pergunta: str, tipo: int | float | datetime, mensagem_erro: str) -> int | float | datetime:
+    flag = True
+    while flag:
+        try:
+            validar = tipo(input(pergunta))
+            flag = False
+        except ValueError:
+            print(mensagem_erro)
+
+    return validar
+
+def valida_vazio(pergunta: str) -> str:
+    flag = True
+    while flag:
+        validar = input(pergunta)
+        if validar.strip() == "":
+            print("ERRO: Campo não pode ser vazio.")
+        else:
+            flag = False
+            return validar
+
 # VARIÁVEIS
 
 nome = "NOME"
@@ -40,6 +63,7 @@ contador = 0
 valor_total = 0
 repetir = "S"
 totais_por_dia = {}
+flag = True
 
 # Retorna booleano caso o arquivo exista ou não.
 arquivo_existe = os.path.exists('consultas.csv')
@@ -53,14 +77,15 @@ with open("consultas.csv", "a") as arquivo:
         arquivo.write(linha + "\n")
 
     while repetir != "N":
-        nome = input("Nome: ")
-        idade = input("Idade: ")
+        
+        nome = valida_vazio("Nome: ")
+        idade = valida_numero("Idade: ", int, "ERRO: Digite apenas números.")
         profissao = input("Profissão: ")
         data_consulta = datetime.now()
-        motivo = input("Motivo da consulta: ")
-        data_retorno = input("Data de retorno: ")
-        valor_consulta = input("Valor da consulta: R$ ")
-        registro = [nome, idade, profissao, data_consulta.strftime("%d/%m/%Y"), motivo, data_retorno, valor_consulta]
+        motivo = valida_vazio("Motivo da consulta: ")
+        data_retorno = valida_numero("Data de retorno: ", converter_data, "ERRO: Digite uma data válida.")
+        valor_consulta = valida_numero("Valor da consulta: R$ ", float, "ERRO: Digite um valor válido.")
+        registro = [nome, str(idade), profissao, data_consulta.strftime("%d/%m/%Y"), motivo, data_retorno.strftime("%d/%m/%Y"), str(valor_consulta)]
         linha = ','.join(registro)
         arquivo.write(linha + "\n")
         print("Registro concluído.")
