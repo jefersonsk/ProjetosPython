@@ -1,5 +1,4 @@
 import os
-import csv
 
 from datetime import datetime
 
@@ -17,7 +16,6 @@ def validar() -> str:
     return validar
 
 def converter_data(texto_para_data: str) -> datetime:
-
     return datetime.strptime(texto_para_data, "%d/%m/%Y")
 
 def linha_cabecalho(tam = 60):
