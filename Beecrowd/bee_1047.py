@@ -1,23 +1,14 @@
-def calcula_tempo(tempo_inicial: int, tempo_final: int, tipo: int) -> int:
-    if tempo_inicial <= tempo_final:
-        return tempo_final - tempo_inicial
-    else:
-        return tipo - (tempo_inicial - tempo_final)
-
 hora_inicial, minuto_inicial, hora_final, minuto_final = map(int, input().split(" "))
 
-hora_total = calcula_tempo(hora_inicial, hora_final, 24)
-minuto_total = calcula_tempo(minuto_inicial, minuto_final, 60)
+inicio_minutos = hora_inicial * 60 + minuto_inicial
+fim_minutos = hora_final * 60 + minuto_final
 
-if minuto_inicial > minuto_final:
-    hora_total -= 1
+diferenca = fim_minutos - inicio_minutos
 
-if hora_inicial == hora_final:
-    if minuto_inicial < minuto_final:
-        hora_total = 0
-    elif minuto_inicial > minuto_final:
-        hora_total = 23
-    else:
-        hora_total = 24
+if diferenca <= 0:
+    diferenca += 1440
+
+hora= diferenca // 60
+minutos = diferenca % 60
     
-print(f"O JOGO DUROU {hora_total} HORA(S) E {minuto_total} MINUTO(S)")
+print(f"O JOGO DUROU {hora} HORA(S) E {minutos} MINUTO(S)")
