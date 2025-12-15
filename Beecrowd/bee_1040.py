@@ -11,7 +11,8 @@ elif media < 5:
 else:
     print(f"Media: {media:.1f}")
     print("Aluno em exame.")
-    nota_exame = float(input("Nota do exame: "))
+    nota_exame = float(input())
+    print(f"Nota do exame: {nota_exame:.1f}")
     nota_final = (nota_exame + media) / 2
     if nota_final >= 5:
         print("Aluno aprovado.")
