@@ -1,4 +1,6 @@
-subfilo, classe, dieta = input().lower().split(" ")
+subfilo  = input().lower()
+classe = input().lower()
+dieta = input().lower()
 
 if subfilo == "vertebrado":
     if classe == "ave":
