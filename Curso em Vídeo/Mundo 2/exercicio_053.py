@@ -1,4 +1,4 @@
-frase = input()
+frase = input().strip()
 
 frase = frase.replace(" ", "")
 invertida = frase[::-1]
