@@ -14,13 +14,13 @@ while flag:
 
     if contador == 2:
         print(f"media = {soma / contador:.2f}")
+        soma = 0
+        contador = 0
 
         while valida:
             continua = int(input("novo calculo (1-sim 2-nao)\n"))
 
             if continua == 1:
-                soma = 0
-                contador = 0
                 valida = False
             elif continua == 2:
                 valida = False
