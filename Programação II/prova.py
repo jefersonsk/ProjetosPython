@@ -44,6 +44,8 @@ while flag:
             for matricula, cadastro in dados:
                 print(f"MATRICULA: {matricula} - NOME: {cadastro[0]} - NOTA: {cadastro[1]}")
 
+            continua()
+
     elif opcao == 3:
         cria_titulo("\nATUALIZAR NOTA", 29, "=")
         matricula = int(input("MATRICULA: "))
@@ -58,13 +60,11 @@ while flag:
 
         if alunos != {}:
             soma = 0
-            contador = 0
             dados = alunos.values()
             for nome, nota in dados:
-                soma = soma + nota
-                contador += 1
+                soma += nota
 
-            print(f"MÉDIA TOTAL: {soma / contador:.2f}")
+            print(f"MÉDIA TOTAL: {soma / len(alunos):.2f}")
             continua()
         else:
             mensagem("ERRO: SEM ALUNOS CADASTRADOS!")
@@ -74,5 +74,4 @@ while flag:
         flag = False
 
     else:
-        print("ERRO: OPÇÃO INVÁLIDA!")
-        continua()
+        mensagem("ERRO: OPÇÃO INVÁLIDA!")
