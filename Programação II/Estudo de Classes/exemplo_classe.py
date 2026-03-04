@@ -27,3 +27,4 @@ while True:
 print("\n--- Pessoas Cadastradas ---")
 for x in lista_pessoas:
     x.apresentar()
+        
