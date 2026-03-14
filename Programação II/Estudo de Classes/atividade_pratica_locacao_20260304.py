@@ -38,7 +38,7 @@ def criar_menu(lista: list)  -> None:
     """
     
     for i,item in enumerate(lista,start=1):
-        print(f"{i} - {item}")
+        print(f"{i} - {CIANO}{item}{RESET}")
     criar_linha("-")
 
 def criar_linha(caracter: str, tamanho = 50) -> None:
@@ -98,7 +98,7 @@ def verificar_numero(mensagem: str) -> int:
     """
     while True:
         try:
-            numero = int(input(mensagem))
+            numero = int(input(f"{AZUL}{mensagem}{RESET}"))
         except (ValueError, TypeError):
             mostrar_erro("E01", VERMELHO)
         else:
@@ -123,7 +123,14 @@ def verificar_data(mensagem: str) -> datetime:
             return data
 
 def mostrar_erro(codigo: str, cor: str) -> None:
-    print(f"{cor}{MENSAGEM_ERRO.get(codigo)}{RESET}")
+    """
+    Mostra a mensagem de erro com a cor de texto escolhida.
+
+    Args:
+        codigo (str): Código do erro
+        cor (str): Cor escolhida
+    """
+    print(f"\n{cor}=== {MENSAGEM_ERRO.get(codigo)} ==={RESET}")
 
 def cadastrar_locacoes(lista_locacoes: list):
     criar_cabecalho("CADASTRO DE LOCAÇÕES", 50, VERDE)
@@ -131,6 +138,7 @@ def cadastrar_locacoes(lista_locacoes: list):
     placa = input("PLACA: ")
     cpf = input("CPF: ")
     retirada = verificar_data("DATA DE RETIRADA (DD/MM/AAAA): ")
+    
     while True:
         entrega = verificar_data("DATA ENTREGA (DD/MM/YYYY): ")
         if entrega >= retirada:
@@ -149,7 +157,7 @@ def listar_locacoes(lista_locacoes: list):
     criar_cabecalho("LISTAGEM DE LOAÇÕES", 50, "\033[32m")
 
     if verificar_lista(lista_locacoes):
-        print("ERRO: Nenhum dado cadastrado.")
+        mostrar_erro("E04", AMARELO)
         pausar()
         return
     
@@ -165,7 +173,7 @@ def buscar_locacoes_placa(lista_locacoes: list):
     criar_cabecalho("BUSCAR LOCAÇÕES POR PLACA", 50, "\033[32m")
 
     if verificar_lista(lista_locacoes):
-        print("ERRO: Nenhum dado cadastrado.")
+        mostrar_erro("E04", AMARELO)
         pausar()
         return
     
@@ -177,7 +185,7 @@ def buscar_locacoes_placa(lista_locacoes: list):
             encontrou = True
             pausar()
     if not encontrou:
-        print("ERRO: Placa não cadastrada.")
+        mostrar_erro("E05", AMARELO)
 
 def buscar_locacoes_cpf(lista_locacoes: list):
     encontrou = False
@@ -185,7 +193,7 @@ def buscar_locacoes_cpf(lista_locacoes: list):
     criar_cabecalho("BUSCAR LOCAÇÕES POR CPF", 50, "\033[32m")
 
     if verificar_lista(lista_locacoes):
-        print("ERRO: Nenhum dado cadastrado.")
+        mostrar_erro("E04", AMARELO)
         pausar()
         return
 
@@ -198,7 +206,7 @@ def buscar_locacoes_cpf(lista_locacoes: list):
             pausar()
 
     if not encontrou:
-        print("ERRO: CPF não cadastrado.")
+        mostrar_erro("E06", AMARELO)
 
 def fechar_programa(lista_locacoes: list):
     print("\nSistema encerrado.\n")
@@ -225,7 +233,8 @@ def main():
         if funcao_escolhida:
             funcao_escolhida(lista_locacoes)
         else:
-            print("ERRO: Opção inválida.")
+            mostrar_erro("E07", VERMELHO)
+            pausar()
 
 if __name__ == "__main__":
     main()
