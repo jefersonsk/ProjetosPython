@@ -1,3 +1,8 @@
+VERDE = "\033[32m"
+LARANJA = "\033[33m"
+AZUL = "\033[34m"
+CIANO = "\033[36m"
+AMARELO = "\033[93m"
 VERMELHO = "\033[31m"
 RESET = "\033[0m"
 
@@ -27,14 +32,14 @@ def criar_menu(lista_opcoes: list) -> None:
         print(f"{i} - {item}")
 
     print("0 - ENCERRAR ATIVIDADES")
-    criar_linha("-")
+    imprimir_linha("-")
 
-def criar_cabecalho(texto: str, quantidade: int = 60) -> None:
-    criar_linha("-")
+def imprimir_cabecalho(texto: str, quantidade: int = 60) -> None:
+    imprimir_linha("-")
     print(texto.center(quantidade))
-    criar_linha("-")
+    imprimir_linha("-")
 
-def criar_linha(caracter: str, quantidade: int = 60) -> None:
+def imprimir_linha(caracter: str, quantidade: int = 60) -> None:
     print(quantidade * caracter)
 
 def verifica_numero(texto: str, tipo_conversao: type) -> int | float:
@@ -47,12 +52,52 @@ def verifica_numero(texto: str, tipo_conversao: type) -> int | float:
 def mostrar_erro(codigo: str, cor: str) -> None:
     print(f"\n{cor}===== ERRO - {MENSAGEM_ERRO.get(codigo, "Erro Desconhecido")} ====={RESET}")
 
-criar_cabecalho("SISTEMA DE LIVRARIA .v1")
+def cadastrar_livros(lista_livros: list):
 
-criar_menu(["CADASTRAR NOVO LIVRO", 
-              "LISTAR LIVROS", 
-              "BUSCAR LIVROS POR NOME", 
-              "BUSCAR LIVROS POR CATEGORIA", 
-              "BUSCAR LIVROS POR PREÇO",
-              "BUSCA POR QUANTIDADE EM ESTOQUE",
-              "VALOR TOTAL EM ESTOQUE"])
+    livro = input("LIVRO: ")
+
+def listar_livros(listar_livros: list):
+    print("2")
+
+def buscar_livros_nome(listar_livros: list):
+    print("3")
+
+def buscar_livros_categoria(listar_livros: list):
+    print("4")
+
+def buscar_livros_preco(listar_livros: list):
+    print("5")
+
+def buscar_quantidade_estoque(listar_livros: list):
+    print("6")
+
+def valor_total_estoque(listar_livros: list):
+    print("7")
+
+def encerrar_atividades():
+    print("\nSistema encerrado\n")
+    exit()
+
+def main():
+    lista_livros = []
+    escolhas_menu = {1: cadastrar_livros,
+                     2: listar_livros,
+                     3: buscar_livros_nome,
+                     4: buscar_livros_categoria,
+                     5: buscar_livros_preco,
+                     6: buscar_quantidade_estoque,
+                     7: valor_total_estoque,
+                     0: encerrar_atividades}
+
+    imprimir_cabecalho("SISTEMA DE LIVRARIA .v1")
+
+    criar_menu(["CADASTRAR NOVO LIVRO", 
+                "LISTAR LIVROS", 
+                "BUSCAR LIVROS POR NOME", 
+                "BUSCAR LIVROS POR CATEGORIA", 
+                "BUSCAR LIVROS POR PREÇO",
+                "BUSCA POR QUANTIDADE EM ESTOQUE",
+                "VALOR TOTAL EM ESTOQUE"])
+
+if __name__ == "__main__":
+    main()
