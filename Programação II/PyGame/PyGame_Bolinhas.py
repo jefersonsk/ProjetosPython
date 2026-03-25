@@ -32,6 +32,7 @@ class Bolinha:
             self.MoverVertical(-1)
 
 listaDeBolinhas = []
+
 listaDeBolinhas.append(Bolinha((255,0,0),150, 300,30, velocidade=0.2))
 listaDeBolinhas.append(Bolinha("blue",250, 100,50,velocidade=0.05))
 listaDeBolinhas.append(Bolinha("orange",250, 200,10,velocidade=0.04))
@@ -43,11 +44,8 @@ pygame.init()
 tela = pygame.display.set_mode([600, 600])
 run = True
 while run:
-    #print("running")
-    #bolinha1.posx += 0.01 #posx = posx + 1
-
     teclado = pygame.key.get_pressed()
-    #print(teclado)
+
     for bolinha in listaDeBolinhas:
         bolinha.DetectaTeclado(teclado)
 
@@ -64,8 +62,6 @@ while run:
     tela.fill((0, 0, 0))
     for bolinha in listaDeBolinhas:
         bolinha.Desenha(tela)
-        #bolinha.MoverHorizontal(1)
-        #bolinha.MoverVertical(1)
 
     # comando para atualizar a tela
     pygame.display.flip()

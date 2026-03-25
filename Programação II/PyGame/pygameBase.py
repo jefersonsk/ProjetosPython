@@ -8,11 +8,11 @@ class Bolinha:
         self.posy = posy
         self.tamanho =tamanho
 
-        def Desenha(self, tela_de_desenho):
-            pygame.draw.circle(tela_de_desenho, 
-                               self.cor, 
-                               (self.posx, self.posy), 
-                               self.tamanho)
+    def Desenha(self, tela_de_desenho):
+        pygame.draw.circle(tela_de_desenho, 
+                           self.cor, 
+                           (self.posx, self.posy), 
+                           self.tamanho)
             
         def MoverHorizontal(self, ValorMov):
             self.posx += ValorMov
@@ -40,6 +40,9 @@ while run:
 
     #comando para pintar o fundo da tela
     tela.fill((0, 0, 0))
+
+    for bolinha in lista_bolinhas:
+        bolinha.Desenha(tela)
 
     #comando para atualizar a tela
     pygame.display.flip()
