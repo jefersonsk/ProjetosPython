@@ -1,26 +1,29 @@
 import unicodedata
 from datetime import date
 
+BRANCO = "\033[37m"
 VERDE = "\033[32m"
-LARANJA = "\033[33m"
 AZUL = "\033[34m"
 CIANO = "\033[36m"
 AMARELO = "\033[93m"
 VERMELHO = "\033[31m"
-MAGENTA = "\033[1;35m"
-CINZA = "\033[1;90m"
+MAGENTA = "\033[35m"
+CINZA = "\033[90m"
 MAGENTA_CLARO = "\033[1;95m"
 VERDE_CLARO = "\033[1;92m"
+CIANO_CLARO = "\033[1;96m"
+LARANJA = "\033[1;38;5;208m"
 RESET = "\033[0m"
 
 MENSAGEM_ERRO = {"E01": "Valor inválido.",
                  "E02": "Opção inválida.",
                  "E03": "Não existe nenhum dado cadastrado.",
-                 "E04": "Livro não encontrado.",
-                 "E05": "Categoria não encontrada.",
-                 "E06": "Valor não localizado.",
+                 "E04": "Título não localizado.",
+                 "E05": "Categoria não localizada.",
+                 "E06": "Sem dados para serem exibidos.",
                  "E07": "Quantidade em estoque não localizada.",
-                 "E08": "Ano inválido."}
+                 "E08": "Ano inválido.",
+                 "E09": "Campo não pode ser em branco."}
 
 class Livro:
     def __init__(self, titulo, codigo, editora, area, ano, valor, quantidade_estoque):
@@ -33,18 +36,18 @@ class Livro:
         self.quantidade_estoque = quantidade_estoque
 
     def mostrar_informacoes(self):
-        print(f"{">" * 6} Cod#{self.codigo:04}")
-        print(f"Título / Editora: {self.titulo} / {self.editora}")
-        print(f"Categoria: {self.area}")
-        print(f"Ano: {self.ano}")
-        print(f"Valor: R$ {self.valor:.2f}")
-        print(f"Estoque: {self.quantidade_estoque}")
-        print(f"Valor total em estoque: R$ {self.valor * self.quantidade_estoque:.2f}")
+        print(f"{VERDE_CLARO}{">" * 6} Cod#{self.codigo:04}{RESET}")
+        print(f"{AZUL}Título / Editora: {AMARELO}{self.titulo} / {self.editora}{RESET}")
+        print(f"{AZUL}Categoria: {AMARELO}{self.area}{RESET}")
+        print(f"{AZUL}Ano: {AMARELO}{self.ano}{RESET}")
+        print(f"{AZUL}Valor: {AMARELO}R$ {self.valor:.2f}{RESET}")
+        print(f"{AZUL}Estoque: {AMARELO}{self.quantidade_estoque}{RESET}")
+        print(f"{AZUL}Valor total em estoque: {AMARELO}R$ {self.valor * self.quantidade_estoque:.2f}{RESET}")
         imprimir_linha("-")
 
 # CRIAÇÃO DE LAYOUT
 
-def criar_menu(lista: list, tipo: str = "principal") -> None:
+def criar_menu(lista: list, tipo: str="principal") -> None:
     """
     Cria menu conforme a lista informada, com opção de tipos "principal" e "submenu" 
 
@@ -54,16 +57,16 @@ def criar_menu(lista: list, tipo: str = "principal") -> None:
                               Tipo "submenu" irá mostrar a opção para voltar para o menu anterior. Valor default é "principal".
     """
     for i, item in enumerate(lista, start=1):
-        print(f"{VERDE}{i} - {item}{RESET}")
+        print(f"{AZUL}{i} - {VERDE}{item}{RESET}")
 
     if tipo.lower() == "principal":
-        print(f"{VERDE}0 - ENCERRAR ATIVIDADES{RESET}")
+        print(f"{AZUL}0 - {VERDE}ENCERRAR ATIVIDADES{RESET}")
     else:
-        print(f"{VERDE}0 - VOLTAR AO MENU PRINCIPAL{RESET}")
+        print(f"{AZUL}0 - {VERDE}VOLTAR AO MENU PRINCIPAL{RESET}")
 
     imprimir_linha()
 
-def imprimir_cabecalho(texto: str, caracter: str = "-", quantidade: int = 60, cor: str ="\033[1;97m") -> None:
+def imprimir_cabecalho(texto: str, caracter: str="-", quantidade: int=60, cor: str=BRANCO) -> None:
     """
     Cria cabeçalhos com cores.
 
@@ -74,9 +77,9 @@ def imprimir_cabecalho(texto: str, caracter: str = "-", quantidade: int = 60, co
     """
     imprimir_linha()
     print(f"{cor}{texto.center(quantidade)}{RESET}")
-    imprimir_linha(caracter, quantidade)
+    imprimir_linha()
 
-def imprimir_linha(caracter: str = "-", quantidade: int = 60) -> None:
+def imprimir_linha(caracter: str="-", quantidade: int=60) -> None:
     """
     Cria uma linha com o caracter e quantidade informados.
 
@@ -94,14 +97,22 @@ def mostrar_erro(codigo: str, cor: str) -> None:
         codigo (str): Código de erro, onde a mensagem será capturada no dicionário MENSAGEM_ERRO.
         cor (str): Cor da mensagem.
     """
-    print(f"\n{cor}===== ERRO - {MENSAGEM_ERRO.get(codigo, "Erro Desconhecido")} ====={RESET}")
+    if cor == AMARELO:
+        mensagem = "AVISO"
+    else:
+        mensagem = "ERRO"
+
+    erro = (f"{mensagem} - {MENSAGEM_ERRO.get(codigo, "Erro Desconhecido")}")
+
+    imprimir_cabecalho(texto=erro, cor=cor)
+
     pausar()
 
 # VALIDAÇÕES
 
 def verificar_lista(lista: list) -> bool:
     """
-    Verifica se a lista tem dados armazenados.
+    Verifica se a lista tem dados armazenados retornando True se a lista está vazia, caso contrário retorna False.
 
     Args:
         lista (list): Lista onde os dados são gravados.
@@ -122,12 +133,12 @@ def escolher_operador(texto: str) -> str:
         str: Retorna "<=" ou ">=".
     """
     while True:
-        print(texto)
+        print(f"{CIANO}{texto}{RESET}")
         imprimir_linha()
 
         criar_menu(["ACIMA DO VALOR (MAIOR OU IGUAL)", "ABAIXO DO VALOR (MENOR OU IGUAL)"], "submenu")
 
-        escolha = verifica_numero("Escolha a opção desejada: ", int)
+        escolha = verificar_numero("Escolha a opção desejada: ", int, cor=AMARELO)
         imprimir_linha()
         
         if escolha == 1:
@@ -135,11 +146,11 @@ def escolher_operador(texto: str) -> str:
         elif escolha == 2:
             return "<="
         elif escolha == 0:
-            main()
+            return None
         else:
-            mostrar_erro("E06", VERMELHO)
+            mostrar_erro("E02", VERMELHO)
 
-def verificar_numero(texto: str, tipo_conversao: type) -> int | float:
+def verificar_numero(texto: str, tipo_conversao: type, cor: str=BRANCO) -> int | float:
     """
     Verifica se o que está sendo digitado é número inteiro ou decimal(float), conforme tipo_conversao informada.
 
@@ -152,11 +163,21 @@ def verificar_numero(texto: str, tipo_conversao: type) -> int | float:
     """
     while True:
         try:
-            return tipo_conversao(input(texto))
+            valor_digitado = input(f"{cor}{texto}{RESET}")
+
+            if valor_digitado == "":
+                valor_digitado = tipo_conversao(0)
+            else:
+                valor_digitado = tipo_conversao(valor_digitado)
+
+            if valor_digitado < 0:
+                mostrar_erro("E01", VERMELHO)
+            else:
+                return valor_digitado
         except (ValueError):
             mostrar_erro("E01", VERMELHO)
 
-def validar_ano() -> int:
+def validar_ano(texto: str, cor: str=BRANCO) -> int:
     """
     Valida o ano digitado.
 
@@ -166,9 +187,9 @@ def validar_ano() -> int:
     ano_atual = date.today().year
 
     while True:
-        ano = verificar_numero("ANO: ", int)
+        ano = verificar_numero(f"{cor}{texto}{RESET}", int)
 
-        if len(str(ano)) == 4 and str(ano).isdigit() and ano <= ano_atual:
+        if len(str(ano)) == 4 and str(ano).isdigit() and ano <= ano_atual or ano == 0:
             return ano
         else:
             mostrar_erro("E08", VERMELHO)
@@ -179,17 +200,37 @@ def pausar() -> None:
     """
     Realiza uma pausa na execução e irá retornar após pressionar qualquer tecla.
     """
-    input("\nPressione qualquer tecla para continuar...\n")
+    input("\nPressione ENTER para continuar...\n")
 
-def fazer_buscas(lista: list, texto: str, tipo: str, erro: str, operador: str = "==", tipo_dado: type = str) -> None:
+def condicao_atendida(dado_livro, pesquisa, operador: str) -> bool:
     """
-    Realiza a busca pelos dados conforme escolha definida. Se não encontrar o dado solicitado, retorna mensagem de erro.
+    Verifica se o dado do livro atende à condição do operador.
+
+    Args:
+        dado_livro (_type_): Dado que foi capturado na lista que deve ser comparado com o dado do usuário.
+        pesquisa (_type_): Dado informado pelo usuário que está sendo utilizado como base para pesquisa.
+        operador (str): Qual operador será usado para retornar os dados.
+
+    Returns:
+        bool: Retorna True se localizar o dado informado pelo usuário. Caso contrário, retorna False.
+    """
+    if operador == "==":
+         return remover_acentos(str(pesquisa)).upper() in remover_acentos(str(dado_livro)).upper()
+    elif operador == ">=":
+         return dado_livro >= pesquisa
+    elif operador == "<=":
+         return dado_livro <= pesquisa
+    return False
+
+def fazer_buscas(lista: list, texto: str, nome_atributo: str, erro: str, operador: str="==", tipo_dado: type=str) -> None:
+    """
+    Realiza a busca pelos dados conforme escolha definida pelo usuário. Se não encontrar o dado solicitado, retorna mensagem de aviso.
 
     Args:
         lista_livros (list): Lista onde estão os dados cadastrados.
         texto (str): Texto da pergunta que será mostrada para o usuário. 
-        tipo (str): Qual tipo de dado que será utilizado na busca.
-        erro (str): Código de erro, onde a mensagem será capturada no dicionário MENSAGEM_ERRO.
+        nome_atributo (str): Qual atributo de classe será utilizado na busca dos dados.
+        erro (str): Código de aviso, onde a mensagem será capturada no dicionário MENSAGEM_ERRO.
         operador (str, optional): Operador que deve ser utilizado para realizar a busca, ">=", "<=" ou "==". Default é "==".
         tipo_dado (type, optional): Tipo de dado que será informado para busca: "int", "float" ou "str". Default é "str".
     """
@@ -200,23 +241,18 @@ def fazer_buscas(lista: list, texto: str, tipo: str, erro: str, operador: str = 
         return
     
     if tipo_dado == str:
-        pesquisa = input(texto)
+        pesquisa = input(f"{AMARELO}{texto}{RESET}")
     else:
-        pesquisa = verificar_numero(texto, tipo_dado)
+        pesquisa = verificar_numero(texto, tipo_dado, cor=AMARELO)
+
+    imprimir_cabecalho("RESULTADO DA PESQUISA", cor=MAGENTA_CLARO)
     
     for dados in lista:
-        if operador == "==":
-            if remover_acentos(str(pesquisa)).upper() in remover_acentos(str(getattr(dados, tipo))).upper():
-                dados.mostrar_informacoes()
-                encontrou = True
-        elif operador == ">=":
-            if getattr(dados, tipo) >= pesquisa:
-                dados.mostrar_informacoes()
-                encontrou = True
-        elif operador == "<=":
-            if getattr(dados, tipo) <= pesquisa:
-                dados.mostrar_informacoes()
-                encontrou = True
+        dado_livro = getattr(dados, nome_atributo)
+
+        if condicao_atendida(dado_livro, pesquisa, operador):
+            dados.mostrar_informacoes()
+            encontrou = True
 
     if not encontrou:
         mostrar_erro(erro, AMARELO)
@@ -243,6 +279,24 @@ def remover_acentos(texto: str) -> str:
     texto_limpo = texto_normalizado.encode("ASCII", "ignore").decode("utf-8")
     return texto_limpo
 
+def verificar_vazio(texto: str, cor: str=BRANCO) -> str:
+    """
+    Verifica se o campo está com conteúdo vazio.
+
+    Args:
+        texto (str): Texto que deve ser exibido para o usuário.
+
+    Returns:
+        str: Se não há conteúdo retorna mensagem de aviso, caso contrário retorna o conteúdo digitado.
+    """
+    while True:
+        texto_digitado = input(f"{cor}{texto}{RESET}")
+
+        if texto_digitado == "":
+            mostrar_erro("E09", VERMELHO)
+        else:
+            return texto_digitado
+
 # FUNÇÕES DO SISTEMA
 
 def cadastrar_livros(lista: list):
@@ -252,25 +306,25 @@ def cadastrar_livros(lista: list):
     Args:
         lista (list): Lista que será usada para armazenar os dados.
     """
-    imprimir_cabecalho("CADASTRAR UM NOVO LIVRO", cor = AZUL)
+    imprimir_cabecalho("CADASTRAR UM NOVO LIVRO", cor=AZUL)
 
     if verificar_lista(lista):
         codigo = 1
     else:
         codigo = lista[-1].codigo + 1
 
-    print(f"CÓDIGO: Cod#{codigo:04}")
-    titulo = input("TÍTULO: ")
-    editora = input("EDITORA: ")
-    area = input("ÁREA: ")
-    ano = validar_ano()
-    valor = verificar_numero("VALOR: R$ ", float)
-    quantidade_estoque = verificar_numero("QUANTIDADE ESTOQUE: ", int)
+    print(f"{MAGENTA}CÓDIGO{RESET}: Cod#{codigo:04}")
+    titulo = verificar_vazio("TÍTULO: ", cor=MAGENTA)
+    editora = input(f"{MAGENTA}EDITORA: {RESET}")
+    area = input(f"{MAGENTA}ÁREA: {RESET}")
+    ano = validar_ano("ANO: ", cor=MAGENTA)
+    valor = verificar_numero("VALOR: R$ ", float, MAGENTA)
+    quantidade_estoque = verificar_numero("QUANTIDADE ESTOQUE: ", int, MAGENTA)
 
     lista.append(Livro(titulo=titulo, codigo=codigo, editora=editora, area=area, ano=ano, 
                          valor=valor, quantidade_estoque=quantidade_estoque))
     
-    imprimir_cabecalho("LIVRO CADASTRADO COM SUCESSO.", cor = VERDE)
+    imprimir_cabecalho("LIVRO CADASTRADO COM SUCESSO.", cor=VERDE)
 
     pausar()
 
@@ -296,7 +350,7 @@ def buscar_livros_titulo(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
-    imprimir_cabecalho("BUSCAR LIVROS POR TíTULO", cor = VERDE)
+    imprimir_cabecalho("BUSCAR LIVROS POR TíTULO", cor=VERDE)
     fazer_buscas(lista, "Digite o título do livro: ", "titulo", "E04")
     
 def buscar_livros_categoria(lista: list):
@@ -306,7 +360,7 @@ def buscar_livros_categoria(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
-    imprimir_cabecalho("BUSCAR LIVROS POR CATEGORIA", cor = VERDE)
+    imprimir_cabecalho("BUSCAR LIVROS POR CATEGORIA", cor=VERDE)
     fazer_buscas(lista, "Digite a categoria desejada: ", "area", "E05")
 
 def buscar_livros_preco(lista: list):
@@ -317,11 +371,14 @@ def buscar_livros_preco(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
-    imprimir_cabecalho("BUSCAR LIVROS POR PREÇO", cor = VERDE)
+    imprimir_cabecalho("BUSCAR LIVROS POR PREÇO", cor=VERDE)
 
     operador = escolher_operador("Como deseja buscar o preço?")
 
-    fazer_buscas(lista, "Digite o preço da pesquisa: R$ ", "valor", "E04", operador, float)
+    if operador is None:
+        return
+
+    fazer_buscas(lista, "Digite o preço da pesquisa: R$ ", "valor", "E06", operador, float)
 
 def buscar_quantidade_estoque(lista: list):
     """
@@ -331,9 +388,12 @@ def buscar_quantidade_estoque(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
-    imprimir_cabecalho("BUSCAR QUANTIDADE POR ESTOQUE", cor = VERDE)
+    imprimir_cabecalho("BUSCAR QUANTIDADE POR ESTOQUE", cor=VERDE)
 
-    operador = escolher_operador("Como deseja buscar a quantidade do estoque?  ")
+    operador = escolher_operador("Como deseja buscar a quantidade do estoque?")
+
+    if operador is None:
+        return
 
     fazer_buscas(lista, "Digite a quantidade em estoque: ", "quantidade_estoque",
                  "E07", operador, int)
@@ -347,13 +407,11 @@ def valor_total_estoque(lista: list):
     """
     valor_total = 0
 
-    imprimir_cabecalho("VALOR TOTAL EM ESTOQUE", cor = VERDE)
+    imprimir_cabecalho("VALOR TOTAL EM ESTOQUE", cor=VERDE)
 
-    for dados in lista:
-        total_item = dados.valor * dados.quantidade_estoque
-        valor_total = valor_total + total_item
+    valor_total = sum(dados.valor * dados.quantidade_estoque for dados in lista)
 
-    print(f"Valor total em estoque: R$ {valor_total:.2f}")
+    print(f"{VERDE}Valor total em estoque: {AMARELO}R$ {valor_total:.2f}{RESET}")
     pausar()
 
 def encerrar_atividades(_):
@@ -378,13 +436,13 @@ def main():
                      0: encerrar_atividades}
     
     lista_livros.append(Livro("Senhor dos Anéis: A Sociedade do Anel", 1, "LPM", "Fantasia", 1999, 110, 5))
-    lista_livros.append(Livro("Senhor dos Anéis: Duas Torres", 2, "LPM", "Fantasia", 1999, 110, 15))
-    lista_livros.append(Livro("Senhor dos Anéis: O Retorno do Rei", 3, "LPM", "Fantasia", 1999, 110, 10))
-    lista_livros.append(Livro("Código Limpo", 4, "POW", "Informática", 2010, 80, 10))
+    # lista_livros.append(Livro("Senhor dos Anéis: Duas Torres", 2, "LPM", "Fantasia", 1999, 110, 15))
+    # lista_livros.append(Livro("Senhor dos Anéis: O Retorno do Rei", 3, "LPM", "Fantasia", 1999, 110, 10))
+    # lista_livros.append(Livro("Código Limpo", 4, "POW", "Informática", 2010, 80, 10))
     lista_livros.append(Livro("Eu sou a Lenda", 5, "Globo", "Aventura", 2011, 65, 15))
 
     while True:
-        imprimir_cabecalho("SISTEMA DE LIVRARIA .v1", cor = CIANO)
+        imprimir_cabecalho("SISTEMA DE LIVRARIA .v1", cor=LARANJA)
 
         criar_menu(["CADASTRAR NOVO LIVRO", 
                     "LISTAR LIVROS", 
@@ -394,7 +452,7 @@ def main():
                     "BUSCA POR QUANTIDADE EM ESTOQUE",
                     "VALOR TOTAL EM ESTOQUE"])
 
-        opcao = verificar_numero("Digite a opção desejada: ", int)
+        opcao = verificar_numero("Digite a opção desejada: ", int, AMARELO)
 
         opcao_escolhida = escolhas_menu.get(opcao)
 
