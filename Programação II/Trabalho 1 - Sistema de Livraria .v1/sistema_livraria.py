@@ -436,9 +436,9 @@ def main():
                      0: encerrar_atividades}
     
     lista_livros.append(Livro("Senhor dos Anéis: A Sociedade do Anel", 1, "LPM", "Fantasia", 1999, 110, 5))
-    # lista_livros.append(Livro("Senhor dos Anéis: Duas Torres", 2, "LPM", "Fantasia", 1999, 110, 15))
-    # lista_livros.append(Livro("Senhor dos Anéis: O Retorno do Rei", 3, "LPM", "Fantasia", 1999, 110, 10))
-    # lista_livros.append(Livro("Código Limpo", 4, "POW", "Informática", 2010, 80, 10))
+    lista_livros.append(Livro("Senhor dos Anéis: Duas Torres", 2, "LPM", "Fantasia", 1999, 110, 15))
+    lista_livros.append(Livro("Senhor dos Anéis: O Retorno do Rei", 3, "LPM", "Fantasia", 1999, 110, 10))
+    lista_livros.append(Livro("Código Limpo", 4, "POW", "Informática", 2010, 80, 10))
     lista_livros.append(Livro("Eu sou a Lenda", 5, "Globo", "Aventura", 2011, 65, 15))
 
     while True:
