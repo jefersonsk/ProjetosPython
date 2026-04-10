@@ -1,0 +1,4 @@
+CóDIGO,TÍTULO,EDITORA,ÁREA/GÊNERO,ANO,VALOR,ESTOQUE
+1,Rambo,LPM,Ficção,2024,70.0,10
+2,O Senhor dos Anéis: A Sociedade do Anel,LPM,Fantasia,1999,110.0,19
+3,Código da Vinci,Atlas,Romance,2004,55.0,19

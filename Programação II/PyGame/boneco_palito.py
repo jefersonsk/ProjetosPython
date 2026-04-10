@@ -1,6 +1,7 @@
 import pygame
 from pygame import KEYDOWN
 
+
 class Boneco:
     def __init__(self, posx, posy, velocidade, tamanho, cor, espessura):
         self.posx = posx
@@ -16,7 +17,7 @@ class Boneco:
         self.movendo = False
 
         if teclas[pygame.K_w] and self.posy > 25:
-            self.movendo= True
+            self.movendo = True
             self.posy -= self.velocidade
         if teclas[pygame.K_s] and self.posy < 675:
             self.movendo = True
@@ -49,11 +50,12 @@ class Boneco:
             pygame.draw.line(tela, self.cor, (self.posx, self.posy + self.tamanho + 60), (self.posx - 10, self.posy + self.tamanho + 100), self.espessura)
             pygame.draw.line(tela, self.cor, (self.posx, self.posy + self.tamanho + 60), (self.posx + 10, self.posy + self.tamanho + 100), self.espessura)
 
+
 pygame.init()
 
-tela = pygame.display.set_mode([800,800])
+tela = pygame.display.set_mode([800, 800])
 flag = True
-boneco = Boneco(200,200, 0.3, 20, "red", 3)
+boneco = Boneco(200, 200, 0.3, 20, "red", 3)
 
 while flag:
     teclado = pygame.key.get_pressed()

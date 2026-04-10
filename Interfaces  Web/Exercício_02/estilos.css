@@ -30,7 +30,6 @@ p {
 /* {Parágrafo, fonte arial, azul, tamanho 14pt e centralizado} */
 
 p.paragrafo_especial {
-    font-family: Arial, Helvetica, sans-serif;
     font-size: 14pt;
     text-align: center;
     color: #0000FF;
@@ -52,18 +51,13 @@ a {
 img {
     border-style: dotted;
     border-color: #0000FF;
-    border-width: 15px;
+    padding: 15px;
 }
 
 /* {Tabela com borda de 1 pixel e duas colunas} */
 
-table {
+table, th, td {
     border-collapse: collapse;
-    border-style: solid;
-    border-width: 1px;
-}
-
-th, td {
     border-style: solid;
     border-width: 1px;
 }

@@ -1,0 +1,2 @@
+Coca-cola,Refrigerante,9.98,3000
+Pepsi,Refrigerante,9.99,2500

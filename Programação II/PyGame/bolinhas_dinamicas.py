@@ -2,8 +2,10 @@ import pygame
 from pygame import KEYDOWN
 from random import randint, choice
 
+
 class Bolinha:
-    def __init__(self, cor, posx, posy, tamanho, velocidade_posx, velocidade_posy, comportamento):
+    def __init__(self, cor, posx, posy, tamanho, velocidade_posx,
+                 velocidade_posy, comportamento):
         self.cor = cor
         self.posx = posx
         self.posy = posy
@@ -17,12 +19,13 @@ class Bolinha:
                            self.cor,
                            (self.posx, self.posy),
                            self.tamanho)
-        
+
     def mover_horizontal(self, fator_movimento):
         self.posx += (self.velocidade_posx * fator_movimento)
 
     def mover_vertical(self, fator_movimento):
         self.posy += (self.velocidade_posy * fator_movimento)
+
 
 def calcular_distancia() -> float:
     """ Calcula a distância entre o centro dos objetos.
@@ -33,6 +36,7 @@ def calcular_distancia() -> float:
     distancia_x = bolinhas_criadas[0].posx - bolinhas_criadas[1].posx
     distancia_y = bolinhas_criadas[0].posy - bolinhas_criadas[1].posy
     return ((distancia_x ** 2) + (distancia_y ** 2)) ** 0.5
+
 
 def quicar_objetos(lista: list) -> None:
     """
@@ -46,28 +50,40 @@ def quicar_objetos(lista: list) -> None:
     lista[0].velocidade_posy = 1
     lista[1].velocidade_posx = -1
     lista[1].velocidade_posy = -1
-    
+
     # 2. Move as bolinhas até se separarem
     while calcular_distancia() <= 40:
         lista[0].mover_horizontal(1)
         lista[0].mover_vertical(1)
         lista[1].mover_horizontal(1)
         lista[1].mover_vertical(1)
-        
+
     # 3. Sorteia a nova direção
     lista[0].velocidade_posx = choice([-0.3, 0.3])
     lista[0].velocidade_posy = choice([-0.3, 0.3])
     lista[1].velocidade_posx = choice([-0.3, 0.3])
     lista[1].velocidade_posy = choice([-0.3, 0.3])
 
+
 def sortear_posicao() -> int:
     return randint(20, 580)
 
+
 bolinhas_criadas = []
 
-bolinhas_criadas.append(Bolinha("red", posx=sortear_posicao(), posy=sortear_posicao(), tamanho=20, velocidade_posx=choice([-0.3, 0.3]), velocidade_posy=choice([-0.3, 0.3]), comportamento="quica"))
-bolinhas_criadas.append(Bolinha("black", posx=sortear_posicao, posy=sortear_posicao(), tamanho=20, velocidade_posx=choice([-0.3, 0.3]), velocidade_posy=choice([-0.3, 0.3]), comportamento="atravessa"))
-    
+bolinhas_criadas.append(Bolinha("red", posx=sortear_posicao(),
+                                posy=sortear_posicao(),
+                                tamanho=20,
+                                velocidade_posx=choice([-0.3, 0.3]),
+                                velocidade_posy=choice([-0.3, 0.3]),
+                                comportamento="quica"))
+bolinhas_criadas.append(Bolinha("black", posx=sortear_posicao(),
+                                posy=sortear_posicao(),
+                                tamanho=20,
+                                velocidade_posx=choice([-0.3, 0.3]),
+                                velocidade_posy=choice([-0.3, 0.3]),
+                                comportamento="atravessa"))
+
 pygame.init()
 tela = pygame.display.set_mode([600, 600])
 flag = True
@@ -77,7 +93,8 @@ while flag:
 
     distancia_total = calcular_distancia()
 
-    # Causa a colisão das bolinhas caso a distância total entre elas fique abaixo de 40.
+    # Causa a colisão das bolinhas caso a distância total
+    # entre elas fique abaixo de 40.
     if distancia_total <= 40:
         quicar_objetos(bolinhas_criadas)
 

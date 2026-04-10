@@ -1,8 +1,9 @@
 import pygame
 from pygame import KEYDOWN
 
+
 class Bolinha:
-    def __init__(self, cor, posx, posy, tamanho = 10, velocidade = 1.0):
+    def __init__(self, cor, posx, posy, tamanho=10, velocidade=1.0):
         self.posx = posx
         self.posy = posy
         self.cor = cor
@@ -10,16 +11,15 @@ class Bolinha:
         self.velocidade = velocidade
 
     def Desenha(self, TelaDeDesenho):
-        pygame.draw.circle(TelaDeDesenho,
-                           self.cor,
-                           (self.posx, self.posy),
-                           self.tamanho)
-        
+        pygame.draw.circle(
+            TelaDeDesenho, self.cor, (self.posx, self.posy), self.tamanho
+        )
+
     def MoverHorizontal(self, FatorMov):
-        self.posx += (self.velocidade*FatorMov)
+        self.posx += self.velocidade * FatorMov
 
     def MoverVertical(self, FatorMov):
-        self.posy += (self.velocidade*FatorMov)
+        self.posy += self.velocidade * FatorMov
 
     def DetectaTeclado(self, key_pressed):
         if key_pressed[pygame.K_RIGHT] == True:
@@ -31,14 +31,15 @@ class Bolinha:
         if key_pressed[pygame.K_UP] == True:
             self.MoverVertical(-1)
 
+
 listaDeBolinhas = []
 
-listaDeBolinhas.append(Bolinha((255,0,0),150, 300,30, velocidade=0.2))
-listaDeBolinhas.append(Bolinha("blue",250, 100,50,velocidade=0.05))
-listaDeBolinhas.append(Bolinha("orange",250, 200,10,velocidade=0.04))
-listaDeBolinhas.append(Bolinha("yellow",150, 150,30,velocidade=0.03))
-listaDeBolinhas.append(Bolinha("white",50, 100,20,velocidade=0.025))
-listaDeBolinhas.append(Bolinha("pink",50, 100,velocidade=0.015))
+listaDeBolinhas.append(Bolinha((255, 0, 0), 150, 300, 30, velocidade=0.2))
+listaDeBolinhas.append(Bolinha("blue", 250, 100, 50, velocidade=0.05))
+listaDeBolinhas.append(Bolinha("orange", 250, 200, 10, velocidade=0.04))
+listaDeBolinhas.append(Bolinha("yellow", 150, 150, 30, velocidade=0.03))
+listaDeBolinhas.append(Bolinha("white", 50, 100, 20, velocidade=0.025))
+listaDeBolinhas.append(Bolinha("pink", 50, 100, velocidade=0.015))
 
 pygame.init()
 tela = pygame.display.set_mode([600, 600])

@@ -2,12 +2,15 @@ def cria_titulo(texto: str, tamanho: int, caracter: str) -> str:
     print(texto)
     print(caracter * tamanho)
 
+
 def continua():
     return input("Pressione qualquer tecla para continuar...\n")
+
 
 def mensagem(texto: str) -> str:
     print(f"\n{texto}\n")
     continua()
+
 
 flag = True
 alunos = {}
@@ -42,7 +45,8 @@ while flag:
             dados = alunos.items()
 
             for matricula, cadastro in dados:
-                print(f"MATRICULA: {matricula} - NOME: {cadastro[0]} - NOTA: {cadastro[1]}")
+                print(
+                    f"MATRICULA: {matricula} - NOME: {cadastro[0]} - NOTA: {cadastro[1]}")
 
             continua()
 
