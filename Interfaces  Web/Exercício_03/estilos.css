@@ -4,6 +4,7 @@ body {
     align-items: center;
     margin: 0;
     background-color: #387dd6;
+    min-height: 100vh;
 }
 
 #banner {
@@ -20,15 +21,17 @@ body {
 main {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     width: 80%;
     background-color: #FFFFFF;
+    flex-grow: 1;
 }
 
 nav {
     display: flex;
     flex-direction: column;
-    width: 20%;
+    width: auto;
+    margin-top: 30pt;
 }
 
 nav a {
@@ -37,11 +40,34 @@ nav a {
     color: #FFFFFF;
     padding: 15px;
     background-color: #00AAFF;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    border: none;
+    margin-left: 50pt;
+    margin-right: 50pt;
 }
 
 nav a:hover {
     background-color: #0077B3;
+}
+
+nav h2 {
+    text-align: left;
+    color: #acb4b4;
+    text-decoration: none;
+    font-size: 18pt;
+}
+
+nav p {
+    color: #acb4b4;
+    font-size: 12pt;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #acb4b4;
+    width: 100%;
+    margin-left: 0pt;
+    margin-right: 0pt;
 }
 
 section {
@@ -55,7 +81,26 @@ section {
 footer {
     display: flex;
     flex-direction: row;
-    color: #000000;
+    align-items: center;
+    color: #FFFFFF;
+    background-color: #000000;
+    width: 80%;
+}
+
+footer p {
+    font-family: 'Courier New';
+    font-size: 11pt;
+    margin-top: 6pt;
+    margin-bottom: 5pt;
+    margin-left: 15pt;
+    font-weight: bold;
+}
+
+footer img{
+    padding-top: 10pt;
+    padding-bottom: 10pt;
+    margin-left: 50pt;
+    width: 3%;
 }
 
 h1 {
