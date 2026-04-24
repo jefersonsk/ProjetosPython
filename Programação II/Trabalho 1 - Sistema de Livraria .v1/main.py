@@ -50,137 +50,137 @@ def inicializar_arquivo(nome_arquivo: str) -> None:
 # ======================================
 
 
-def filiais(lista_livros, lista_filiais: list):
-    escolha_menu = {1: cadastrar_filial,
-                    2: listar_filiais,
-                    3: adicionar_livros_filial}
+# def filiais(lista_livros, lista_filiais: list):
+#     escolha_menu = {1: cadastrar_filial,
+#                     2: listar_filiais,
+#                     3: adicionar_livros_filial}
 
-    while True:
-        imprimir_cabecalho("FILIAIS", cor=Cor.AZUL)
+#     while True:
+#         imprimir_cabecalho("FILIAIS", cor=Cor.AZUL)
 
-        criar_menu(
-            [
-                "CADASTRO DE FILIAIS",
-                "LISTAR FILIAIS",
-                "ADICIONAR LIVRO A FILIAIS"
-            ],
-            bloqueado=False,
-            tipo="submenu"
-        )
+#         criar_menu(
+#             [
+#                 "CADASTRO DE FILIAIS",
+#                 "LISTAR FILIAIS",
+#                 "ADICIONAR LIVRO A FILIAIS"
+#             ],
+#             bloqueado=False,
+#             tipo="submenu"
+#         )
 
-        opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
+#         opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
 
-        if opcao == 0:
-            return None
+#         if opcao == 0:
+#             return None
 
-        opcao_escolhida = escolha_menu.get(opcao)
+#         opcao_escolhida = escolha_menu.get(opcao)
 
-        opcao_escolhida(lista_livros, lista_filiais)
-
-
-def listar_filiais(lista_livros: list, lista_filiais: list):
-    imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)
-
-    if verificar_lista(lista_filiais):
-        mostrar_erro("E03", Cor.AMARELO)
-    else:
-        for dados in lista_filiais:
-            dados.mostrar_informacoes_filial()
-
-        pausar()
+#         opcao_escolhida(lista_livros, lista_filiais)
 
 
-def adicionar_livros_filial(lista_livros: list, lista_filiais: list):
-    imprimir_cabecalho("ADICIONAR LIVRO A FILIAL", cor=Cor.VERDE)
+# def listar_filiais(lista_livros: list, lista_filiais: list):
+#     imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)
 
-    if verificar_lista(lista_livros) or verificar_lista(lista_filiais):
-        mostrar_erro("E04", Cor.AMARELO)
-    else:
-        while True:
-            imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)
+#     if verificar_lista(lista_filiais):
+#         mostrar_erro("E03", Cor.AMARELO)
+#     else:
+#         for dados in lista_filiais:
+#             dados.mostrar_informacoes_filial()
 
-            for filial in lista_filiais:
-                filial.mostrar_informacoes_resumidas()
-
-            imprimir_linha()
-
-            codigo_filial_escolhida = verificar_numero(
-                "Digite o código da filial: ",
-                int,
-            )
-
-            for filial in lista_filiais:
-                if codigo_filial_escolhida == filial.codigo:
-                    titulo_livro = fazer_buscas(
-                        lista_livros,
-                        "Digite o título do livro: ",
-                        "titulo",
-                        "E04",
-                        retorno="s"
-                    )
-
-                    if titulo_livro:
-                        codigo_livro_escolhido = verificar_numero(
-                            "Digite o código do livro: ", int, Cor.AMARELO
-                        )
-
-                        for livro in lista_livros:
-                            if codigo_livro_escolhido == livro.codigo:
-                                valor = verificar_numero(
-                                    "Valor: R$ ", float
-                                )
-                                quantidade_estoque = verificar_numero(
-                                    "Estoque: ", int
-                                )
-
-                                filial.adicionar_ao_estoque(
-                                    livro, valor, quantidade_estoque
-                                )
-
-                            # else:
-                            #     imprimir_cabecalho(
-                            #         "CÓDIGO LIVRO NÃO ENCONTRADO.", cor=Cor.AMARELO)
-
-                else:
-                    imprimir_cabecalho(
-                        "CÓDIGO DE FILIAL NÃO LOCALIZADO.", cor=Cor.AMARELO)
-
-            # for dados_filial in lista_filiais:
-            #     dados_filial.mostrar_informacoes_filial()
-
-            # escolha = continuar(
-            #     "Deseja vincular esse livro a outra filial? (S/N) ")
-
-            # if escolha:
-            #     continue
-            # else:
-            #     break
+#         pausar()
 
 
-def cadastrar_filial(lista_livros: list, lista_filiais: list):
-    imprimir_cabecalho("CADASTRO DE FILIAIS", cor=Cor.AZUL)
+# def adicionar_livros_filial(lista_livros: list, lista_filiais: list):
+#     imprimir_cabecalho("ADICIONAR LIVRO A FILIAL", cor=Cor.VERDE)
 
-    if verificar_lista(lista_filiais):
-        codigo = 1
-    else:
-        codigo = lista_filiais[-1].codigo + 1
+#     if verificar_lista(lista_livros) or verificar_lista(lista_filiais):
+#         mostrar_erro("E04", Cor.AMARELO)
+#     else:
+#         while True:
+#             imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)
 
-    print(f"{Cor.MAGENTA}CÓDIGO{Cor.RESET}: FL{codigo:02}")
-    nome_filial = verificar_vazio("NOME FILIAL: ", cor=Cor.MAGENTA)
-    endereco = verificar_vazio("ENDEREÇO: ", cor=Cor.MAGENTA)
-    contato = verificar_vazio("CONTATO: ", cor=Cor.MAGENTA)
+#             for filial in lista_filiais:
+#                 filial.mostrar_informacoes_resumidas()
 
-    lista_filiais.append(
-        Filial(
-            codigo=codigo,
-            nome=nome_filial,
-            endereco=endereco,
-            contato=contato,
-        ))
+#             imprimir_linha()
 
-    imprimir_cabecalho("FILIAL CADASTRADA COM SUCESSO.", cor=Cor.VERDE)
+#             codigo_filial_escolhida = verificar_numero(
+#                 "Digite o código da filial: ",
+#                 int,
+#             )
 
-    pausar()
+#             for filial in lista_filiais:
+#                 if codigo_filial_escolhida == filial.codigo:
+#                     titulo_livro = fazer_buscas(
+#                         lista_livros,
+#                         "Digite o título do livro: ",
+#                         "titulo",
+#                         "E04",
+#                         retorno="s"
+#                     )
+
+#                     if titulo_livro:
+#                         codigo_livro_escolhido = verificar_numero(
+#                             "Digite o código do livro: ", int, Cor.AMARELO
+#                         )
+
+#                         for livro in lista_livros:
+#                             if codigo_livro_escolhido == livro.codigo:
+#                                 valor = verificar_numero(
+#                                     "Valor: R$ ", float
+#                                 )
+#                                 quantidade_estoque = verificar_numero(
+#                                     "Estoque: ", int
+#                                 )
+
+#                                 filial.adicionar_ao_estoque(
+#                                     livro, valor, quantidade_estoque
+#                                 )
+
+#                             # else:
+#                             #     imprimir_cabecalho(
+#                             #         "CÓDIGO LIVRO NÃO ENCONTRADO.", cor=Cor.AMARELO)
+
+#                 else:
+#                     imprimir_cabecalho(
+#                         "CÓDIGO DE FILIAL NÃO LOCALIZADO.", cor=Cor.AMARELO)
+
+#             # for dados_filial in lista_filiais:
+#             #     dados_filial.mostrar_informacoes_filial()
+
+#             # escolha = continuar(
+#             #     "Deseja vincular esse livro a outra filial? (S/N) ")
+
+#             # if escolha:
+#             #     continue
+#             # else:
+#             #     break
+
+
+# def cadastrar_filial(lista_livros: list, lista_filiais: list):
+#     imprimir_cabecalho("CADASTRO DE FILIAIS", cor=Cor.AZUL)
+
+#     if verificar_lista(lista_filiais):
+#         codigo = 1
+#     else:
+#         codigo = lista_filiais[-1].codigo + 1
+
+#     print(f"{Cor.MAGENTA}CÓDIGO{Cor.RESET}: FL{codigo:02}")
+#     nome_filial = verificar_vazio("NOME FILIAL: ", cor=Cor.MAGENTA)
+#     endereco = verificar_vazio("ENDEREÇO: ", cor=Cor.MAGENTA)
+#     contato = verificar_vazio("CONTATO: ", cor=Cor.MAGENTA)
+
+#     lista_filiais.append(
+#         Filial(
+#             codigo=codigo,
+#             nome=nome_filial,
+#             endereco=endereco,
+#             contato=contato,
+#         ))
+
+#     imprimir_cabecalho("FILIAL CADASTRADA COM SUCESSO.", cor=Cor.VERDE)
+
+#     pausar()
 
 
 def continuar(texto: str) -> bool:
@@ -195,28 +195,16 @@ def continuar(texto: str) -> bool:
         return True
 
 
-def buscar_livros_titulo(lista_livros: list, lista_filiais: list):
-    """
-    Efetua busca dos livros utilizando como parâmetro o título.
+# def buscar_livros_categoria(lista: list):
+#     """
+#     Efetua busca dos livros utilizando como parâmetro a categoria.
 
-    Args:
-        lista (list): Lista que será usada para exibir os dados.
-    """
+#     Args:
+#         lista (list): Lista que será usada para exibir os dados.
+#     """
 
-    imprimir_cabecalho("BUSCAR LIVROS POR TíTULO", cor=Cor.VERDE)
-    fazer_buscas(lista_livros, "Digite o título do livro: ", "titulo", "E04")
-
-
-def buscar_livros_categoria(lista: list):
-    """
-    Efetua busca dos livros utilizando como parâmetro a categoria.
-
-    Args:
-        lista (list): Lista que será usada para exibir os dados.
-    """
-
-    imprimir_cabecalho("BUSCAR LIVROS POR CATEGORIA", cor=Cor.VERDE)
-    fazer_buscas(lista, "Digite a categoria desejada: ", "area", "E05")
+#     imprimir_cabecalho("BUSCAR LIVROS POR CATEGORIA", cor=Cor.VERDE)
+#     fazer_buscas(lista, "Digite a categoria desejada: ", "area", "E05")
 
 
 def buscar_livros_preco(lista: list):
@@ -324,11 +312,11 @@ def main():
     lista_filiais = []
     sistema = Livraria(lista_livros, lista_filiais)
     escolhas_menu = {
-        1: filiais,
+        1: sistema.filiais,
         2: sistema.cadastrar_livros,
         3: sistema.listar_dados,
-        4: buscar_livros_titulo,
-        5: buscar_livros_categoria,
+        4: sistema.buscar_livros_titulo,
+        5: sistema.buscar_livros_categoria,
         6: buscar_livros_preco,
         7: buscar_quantidade_estoque,
         8: valor_total_estoque,
@@ -356,7 +344,7 @@ def main():
                 "FILIAIS",
                 "CADASTRAR NOVO LIVRO",
                 "LISTAR LIVROS",
-                "BUSCAR LIVROS POR NOME",
+                "BUSCAR LIVROS POR TÍTULO",
                 "BUSCAR LIVROS POR CATEGORIA",
                 "BUSCAR LIVROS POR PREÇO",
                 "BUSCA POR QUANTIDADE EM ESTOQUE",
