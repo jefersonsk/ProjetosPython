@@ -19,7 +19,7 @@ class Cor:
 
 
 class Erro:
-    MENSAGENS= {
+    MENSAGENS = {
         "E01": "Valor inválido.",
         "E02": "Opção inválida.",
         "E03": "Não existe nenhum dado cadastrado.",
@@ -29,17 +29,17 @@ class Erro:
         "E07": "Quantidade em estoque não localizada.",
         "E08": "Ano inválido.",
         "E09": "Campo não pode ser em branco.",
-        "E10": "Arquivo com dados carregados.",
-        "E11": "Dados do arquivo não carregador."
+        "E10": "Dados já foram carregados para o sistema.",
+        "E11": "Dados do arquivo não carregados.\nCarregar dados antes de utilizar o aplicativo"
     }
 
 
-#======================================
+# ======================================
 # FERRAMENTAS DE LAYOUT E MENSAGENS
-#======================================
+# ======================================
 
 
-def criar_menu(lista: list, bloqueado: bool, tipo: str = "principal") -> None:
+def criar_menu(lista: list, bloqueado: bool = False, tipo: str = "principal") -> None:
     """
     Cria menu conforme a lista informada, com opção de tipos
     "principal" e "submenu"
@@ -52,7 +52,7 @@ def criar_menu(lista: list, bloqueado: bool, tipo: str = "principal") -> None:
             voltar para o menu anterior. Valor default é "principal".
     """
     for i, item in enumerate(lista, start=1):
-        if bloqueado and i != 8:
+        if bloqueado and i != 9:
             print(f"{Cor.CINZA}{i} - {Cor.CINZA}{item}{Cor.RESET}")
         else:
             print(f"{Cor.AZUL}{i} - {Cor.VERDE}{item}{Cor.RESET}")
@@ -118,9 +118,10 @@ def pausar() -> None:
     """
     input("\nPressione ENTER para continuar...\n")
 
-#======================================
+# ======================================
 # FUNÇÕES DE VALIDAÇÃO
-#======================================
+# ======================================
+
 
 def verificar_lista(lista: list) -> bool:
     """
@@ -152,7 +153,7 @@ def escolher_operador(texto: str) -> str:
         criar_menu(
             ["ACIMA DO VALOR (MAIOR OU IGUAL)",
              "ABAIXO DO VALOR (MENOR OU IGUAL)"],
-             bloqueado=False,
+            bloqueado=False,
             tipo="submenu",
         )
 
@@ -213,9 +214,9 @@ def validar_ano(texto: str, cor: str = Cor.BRANCO) -> int:
             mostrar_erro("E08", Cor.VERMELHO)
 
 
-#======================================
+# ======================================
 # FERRAMENTAS
-#======================================
+# ======================================
 
 
 def condicao_atendida(dado_livro, pesquisa, operador: str) -> bool:
@@ -267,24 +268,26 @@ def fazer_buscas(
         mostrar_erro("E03", Cor.AMARELO)
         return
 
-    if tipo_dado == str:
-        pesquisa = input(f"{Cor.AMARELO}{texto}{Cor.RESET}")
-    else:
-        pesquisa = verificar_numero(texto, tipo_dado, cor=Cor.AMARELO)
+    while True:
+        if tipo_dado == str:
+            pesquisa = input(f"{Cor.AMARELO}{texto}{Cor.RESET}")
+        else:
+            pesquisa = verificar_numero(texto, tipo_dado, cor=Cor.AMARELO)
 
-    imprimir_cabecalho("RESULTADO DA PESQUISA", cor=Cor.MAGENTA_CLARO)
+        imprimir_cabecalho("RESULTADO DA PESQUISA", cor=Cor.MAGENTA_CLARO)
 
-    for dados in lista:
-        dado_livro = getattr(dados, nome_atributo)
+        for dados in lista:
+            dado_livro = getattr(dados, nome_atributo)
 
-        if condicao_atendida(dado_livro, pesquisa, operador):
-            dados.mostrar_informacoes()
-            encontrou = True
+            if condicao_atendida(dado_livro, pesquisa, operador):
+                dados.mostrar_informacoes()
+                encontrou = True
 
-    if not encontrou:
-        mostrar_erro(erro, Cor.AMARELO)
-    else:
-        pausar()
+        if not encontrou:
+            mostrar_erro(erro, Cor.AMARELO)
+        else:
+            pausar()
+            return
 
 
 def remover_acentos(texto: str) -> str:
@@ -325,5 +328,3 @@ def verificar_vazio(texto: str, cor: str = Cor.BRANCO) -> str:
             mostrar_erro("E09", Cor.VERMELHO)
         else:
             return texto_digitado
-        
-

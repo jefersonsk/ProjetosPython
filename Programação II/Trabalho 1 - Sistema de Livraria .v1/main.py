@@ -1,152 +1,210 @@
 import os
-from livro import Livro
+from livro import Livro, Filial, Livraria
 from utilidades import (
     Cor,
     imprimir_cabecalho,
+    imprimir_linha,
     criar_menu,
     verificar_lista,
     verificar_numero,
     verificar_vazio,
-    validar_ano,
     pausar,
     mostrar_erro,
     fazer_buscas,
     escolher_operador
-    )
+)
 
 
-#======================================
+# ======================================
 # MANIPULAÇÃO DE ARQUIVOS
-#======================================
+# ======================================
 
 
-def inicializar_arquivo(nome_arquivo: str):
-    cabecalho = ["CóDIGO",
-                 "TíTULO",
-                 "EDITORA",
-                 "ÁREA/GÊNERO",
-                 "ANO",
-                 "VALOR",
-                 "ESTOQUE"]
+def inicializar_arquivo(nome_arquivo: str) -> None:
+    """
+    Verifica se o arquivo existe ou se o seu tamanho é igual a 0. Caso verdadeiro, 
+    cria o arquivo e adiciona a linha de cabeçalho.
+
+    Args:
+        nome_arquivo (str): Nome ou caminho do arquivo que será verificado.
+    """
+
+    cabecalho = [
+        "CóDIGO",
+        "TíTULO",
+        "EDITORA",
+        "ÁREA/GÊNERO",
+        "ANO"
+    ]
 
     arquivo_existe = os.path.exists(nome_arquivo)
 
     if not arquivo_existe or os.path.getsize(nome_arquivo) == 0:
-        with open(nome_arquivo, "a") as arquivo:
+        with open(nome_arquivo, "a", encoding="utf-8") as arquivo:
             linha = ",".join(cabecalho)
             arquivo.write(linha + "\n")
 
 
-def carregar_dados(lista: list, nome_arquivo: str) -> list:
-    with open(nome_arquivo, "r") as arquivo:
-        arquivo.readline()
-
-        for dados in arquivo:
-            try:
-                cache = dados.strip().split(",")
-                dados_livro = Livro(
-                    codigo=int(cache[0]),
-                    titulo=cache[1],
-                    editora=cache[2],
-                    area=cache[3],
-                    ano=int(cache[4]),
-                    valor=float(cache[5]),
-                    quantidade_estoque=int(cache[6])
-                )
-
-                lista.append(dados_livro)
-
-            except(ValueError, IndexError):
-                print(f"{Cor.AMARELO}Aviso: Linha corrompida ignorada.{Cor.RESET}")
-
-        return lista
-        
-    
-
-def salvar_livro(lista: list, nome_arquivo: str) -> None:
-    with open(nome_arquivo, "w") as arquivo:
-        cabecalho = "CóDIGO,TÍTULO,EDITORA,ÁREA/GÊNERO,ANO,VALOR,ESTOQUE\n"
-        arquivo.write(cabecalho)
-
-        for livro in lista:
-            dados = livro.formatar_para_csv()
-            arquivo.write(dados + "\n")
-
-        imprimir_cabecalho("DADOS GRAVADOS COM SUCESSO", cor=Cor.VERDE)
-
-
-#======================================
+# ======================================
 # FUNÇÕES PRINCIPAIS
-#======================================
+# ======================================
 
 
-def cadastrar_livros(lista: list):
-    """
-    Efetua o cadastro dos livros no sistema.
+def filiais(lista_livros, lista_filiais: list):
+    escolha_menu = {1: cadastrar_filial,
+                    2: listar_filiais,
+                    3: adicionar_livros_filial}
 
-    Args:
-        lista (list): Lista que será usada para armazenar os dados.
-    """
-    imprimir_cabecalho("CADASTRAR UM NOVO LIVRO", cor=Cor.AZUL)
+    while True:
+        imprimir_cabecalho("FILIAIS", cor=Cor.AZUL)
 
-    if verificar_lista(lista):
-        codigo = 1
-    else:
-        codigo = lista[-1].codigo + 1
-
-    print(f"{Cor.MAGENTA}CÓDIGO{Cor.RESET}: Cod#{codigo:04}")
-    titulo = verificar_vazio("TÍTULO: ", cor=Cor.MAGENTA)
-    editora = input(f"{Cor.MAGENTA}EDITORA: {Cor.RESET}")
-    area = input(f"{Cor.MAGENTA}ÁREA: {Cor.RESET}")
-    ano = validar_ano("ANO: ", cor=Cor.MAGENTA)
-    valor = verificar_numero("VALOR: R$ ", float, Cor.MAGENTA)
-    quantidade_estoque = verificar_numero("QUANTIDADE ESTOQUE: ", int, Cor.MAGENTA)
-
-    lista.append(
-        Livro(
-            codigo=codigo,
-            titulo=titulo,
-            editora=editora,
-            area=area,
-            ano=ano,
-            valor=valor,
-            quantidade_estoque=quantidade_estoque,
+        criar_menu(
+            [
+                "CADASTRO DE FILIAIS",
+                "LISTAR FILIAIS",
+                "ADICIONAR LIVRO A FILIAIS"
+            ],
+            bloqueado=False,
+            tipo="submenu"
         )
-    )
 
-    imprimir_cabecalho("LIVRO CADASTRADO COM SUCESSO.", cor=Cor.VERDE)
+        opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
 
-    pausar()
+        if opcao == 0:
+            return None
+
+        opcao_escolhida = escolha_menu.get(opcao)
+
+        opcao_escolhida(lista_livros, lista_filiais)
 
 
-def listar_dados(lista: list):
-    """
-    Exibe todos os dados de uma lista. Caso ela esteja em branco, uma mensagem de erro é exibida.
+def listar_filiais(lista_livros: list, lista_filiais: list):
+    imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)
 
-    Args:
-        lista (list): Lista que será usada para exibir os dados.
-    """
-
-    imprimir_cabecalho("LISTAR LIVROS", cor=Cor.VERDE)
-
-    if verificar_lista(lista):
+    if verificar_lista(lista_filiais):
         mostrar_erro("E03", Cor.AMARELO)
     else:
-        for dados in lista:
-            dados.mostrar_informacoes()
+        for dados in lista_filiais:
+            dados.mostrar_informacoes_filial()
 
         pausar()
 
 
-def buscar_livros_titulo(lista: list):
+def adicionar_livros_filial(lista_livros: list, lista_filiais: list):
+    imprimir_cabecalho("ADICIONAR LIVRO A FILIAL", cor=Cor.VERDE)
+
+    if verificar_lista(lista_livros) or verificar_lista(lista_filiais):
+        mostrar_erro("E04", Cor.AMARELO)
+    else:
+        while True:
+            imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)
+
+            for filial in lista_filiais:
+                filial.mostrar_informacoes_resumidas()
+
+            imprimir_linha()
+
+            codigo_filial_escolhida = verificar_numero(
+                "Digite o código da filial: ",
+                int,
+            )
+
+            for filial in lista_filiais:
+                if codigo_filial_escolhida == filial.codigo:
+                    titulo_livro = fazer_buscas(
+                        lista_livros,
+                        "Digite o título do livro: ",
+                        "titulo",
+                        "E04",
+                        retorno="s"
+                    )
+
+                    if titulo_livro:
+                        codigo_livro_escolhido = verificar_numero(
+                            "Digite o código do livro: ", int, Cor.AMARELO
+                        )
+
+                        for livro in lista_livros:
+                            if codigo_livro_escolhido == livro.codigo:
+                                valor = verificar_numero(
+                                    "Valor: R$ ", float
+                                )
+                                quantidade_estoque = verificar_numero(
+                                    "Estoque: ", int
+                                )
+
+                                filial.adicionar_ao_estoque(
+                                    livro, valor, quantidade_estoque
+                                )
+
+                            # else:
+                            #     imprimir_cabecalho(
+                            #         "CÓDIGO LIVRO NÃO ENCONTRADO.", cor=Cor.AMARELO)
+
+                else:
+                    imprimir_cabecalho(
+                        "CÓDIGO DE FILIAL NÃO LOCALIZADO.", cor=Cor.AMARELO)
+
+            # for dados_filial in lista_filiais:
+            #     dados_filial.mostrar_informacoes_filial()
+
+            # escolha = continuar(
+            #     "Deseja vincular esse livro a outra filial? (S/N) ")
+
+            # if escolha:
+            #     continue
+            # else:
+            #     break
+
+
+def cadastrar_filial(lista_livros: list, lista_filiais: list):
+    imprimir_cabecalho("CADASTRO DE FILIAIS", cor=Cor.AZUL)
+
+    if verificar_lista(lista_filiais):
+        codigo = 1
+    else:
+        codigo = lista_filiais[-1].codigo + 1
+
+    print(f"{Cor.MAGENTA}CÓDIGO{Cor.RESET}: FL{codigo:02}")
+    nome_filial = verificar_vazio("NOME FILIAL: ", cor=Cor.MAGENTA)
+    endereco = verificar_vazio("ENDEREÇO: ", cor=Cor.MAGENTA)
+    contato = verificar_vazio("CONTATO: ", cor=Cor.MAGENTA)
+
+    lista_filiais.append(
+        Filial(
+            codigo=codigo,
+            nome=nome_filial,
+            endereco=endereco,
+            contato=contato,
+        ))
+
+    imprimir_cabecalho("FILIAL CADASTRADA COM SUCESSO.", cor=Cor.VERDE)
+
+    pausar()
+
+
+def continuar(texto: str) -> bool:
+    opcao = input(texto)
+
+    if opcao.upper() == "S":
+        return True
+    elif opcao.upper() == "N":
+        return False
+    else:
+        mostrar_erro("E02", Cor.VERMELHO)
+        return True
+
+
+def buscar_livros_titulo(lista_livros: list, lista_filiais: list):
     """
     Efetua busca dos livros utilizando como parâmetro o título.
 
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
+
     imprimir_cabecalho("BUSCAR LIVROS POR TíTULO", cor=Cor.VERDE)
-    fazer_buscas(lista, "Digite o título do livro: ", "titulo", "E04")
+    fazer_buscas(lista_livros, "Digite o título do livro: ", "titulo", "E04")
 
 
 def buscar_livros_categoria(lista: list):
@@ -156,6 +214,7 @@ def buscar_livros_categoria(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
+
     imprimir_cabecalho("BUSCAR LIVROS POR CATEGORIA", cor=Cor.VERDE)
     fazer_buscas(lista, "Digite a categoria desejada: ", "area", "E05")
 
@@ -168,6 +227,7 @@ def buscar_livros_preco(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
+
     imprimir_cabecalho("BUSCAR LIVROS POR PREÇO", cor=Cor.VERDE)
 
     operador = escolher_operador("Como deseja buscar o preço?")
@@ -188,6 +248,7 @@ def buscar_quantidade_estoque(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
+
     imprimir_cabecalho("BUSCAR QUANTIDADE POR ESTOQUE", cor=Cor.VERDE)
 
     operador = escolher_operador("Como deseja buscar a quantidade do estoque?")
@@ -212,6 +273,7 @@ def valor_total_estoque(lista: list):
     Args:
         lista (list): Lista que será usada para exibir os dados.
     """
+
     valor_total = 0
 
     imprimir_cabecalho("VALOR TOTAL EM ESTOQUE", cor=Cor.VERDE)
@@ -223,85 +285,75 @@ def valor_total_estoque(lista: list):
     pausar()
 
 
-def carregar_estoque(lista: list) -> list:
-    if verificar_lista(lista):
-        lista_livros = carregar_dados(lista, "livraria.txt")
-        imprimir_cabecalho("DADOS CARREGADOS", cor=Cor.VERDE)
-        pausar()
-        return lista_livros
-    else:
-        mostrar_erro("E10", Cor.VERMELHO)
-
-
-def atualizar_estoque(lista: list):
-    salvar_livro(lista, "livraria.txt")
-
-    imprimir_cabecalho("ARQUIVO ATUALIZADO.", cor=Cor.VERDE)
-
-
-def encerrar_atividades(lista: list) -> None:
+def encerrar_atividades(lista: list, alteracao: bool) -> None:
     """
     Encerra o sistema.
 
     Args:
-        _: Parâmetro ignorado intencionalmente (necessário para manter a
-           assinatura do menu).
+        lista (list): Carrega lista para realizar verificações.
+        alteracao (bool): Parâmetro que recebe um valor booleano
+            True caso o arquivo tenha dados para serem gravados ou
+            False caso não tenha dados.
     """
-    
-    imprimir_cabecalho("Deseja atualizar arquivo de estoque? ", cor=Cor.AZUL)
-    criar_menu(["SIM"], bloqueado=False)
 
-    opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
+    if not verificar_lista(lista) and alteracao:
 
-    if opcao == 1:
-        salvar_livro(lista, "livraria.txt")
+        imprimir_cabecalho(
+            "Deseja atualizar arquivo de estoque? ", cor=Cor.AZUL)
+        criar_menu(["SIM"], bloqueado=False)
+
+        opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
+
+        if opcao == 1:
+            salvar_livro(lista, nome_arquivo="livraria.txt")
 
     print(f"\n{Cor.VERDE}<<< SISTEMA ENCERRADO >>>{Cor.RESET}\n")
     exit()
 
 
 def main():
+    """
+    Executa o ciclo principal do sistema de livraria. 
+
+    Responsável por inicializar o ambiente, gerir o estado do stock, 
+    exibir o menu interativo e coordenar a execução das funcionalidades 
+    escolhidas pelo utilizador até ao encerramento do programa.
+    """
+
     lista_livros = []
+    lista_filiais = []
+    sistema = Livraria(lista_livros, lista_filiais)
     escolhas_menu = {
-        1: cadastrar_livros,
-        2: listar_dados,
-        3: buscar_livros_titulo,
-        4: buscar_livros_categoria,
-        5: buscar_livros_preco,
-        6: buscar_quantidade_estoque,
-        7: valor_total_estoque,
-        8: carregar_estoque,
-        9: atualizar_estoque,
-        0: encerrar_atividades,
+        1: filiais,
+        2: sistema.cadastrar_livros,
+        3: sistema.listar_dados,
+        4: buscar_livros_titulo,
+        5: buscar_livros_categoria,
+        6: buscar_livros_preco,
+        7: buscar_quantidade_estoque,
+        8: valor_total_estoque,
+        9: sistema.carregar_estoque,
+        10: sistema.atualizar_estoque,
     }
     estoque_carregado = False
+    houve_alteracao = False
 
     inicializar_arquivo("livraria.txt")
-    # carregar_dados(lista_livros, "livraria.txt")
 
-    # lista_livros.append(
-    #     Livro(
-    #         "Senhor dos Anéis: A Sociedade do Anel", 1,
-    #         "LPM", "Fantasia", 1999, 110, 5)
-    # )
-    # lista_livros.append(
-    #     Livro("Senhor dos Anéis: Duas Torres", 2,
-    #           "LPM", "Fantasia", 1999, 110, 15)
-    # )
-    # lista_livros.append(
-    #     Livro("Senhor dos Anéis: O Retorno do Rei",
-    #           3, "LPM", "Fantasia", 1999, 110, 10)
-    # )
-    # lista_livros.append(Livro("Código Limpo", 4, "POW",
-    #                     "Informática", 2010, 80, 10))
-    # lista_livros.append(
-    #     Livro("Eu sou a Lenda", 5, "Globo", "Aventura", 2011, 65, 15))
+    with open("livraria.txt", "r") as arquivo:
+        linhas = arquivo.readlines()
+
+    if len(linhas) <= 1:
+        estoque_carregado = True
+    else:
+        estoque_carregado = False
 
     while True:
         imprimir_cabecalho("SISTEMA DE LIVRARIA .v1", cor=Cor.LARANJA)
 
         criar_menu(
             [
+                "FILIAIS",
                 "CADASTRAR NOVO LIVRO",
                 "LISTAR LIVROS",
                 "BUSCAR LIVROS POR NOME",
@@ -311,24 +363,37 @@ def main():
                 "VALOR TOTAL EM ESTOQUE",
                 "CARREGAR ESTOQUE",
                 "ATUALIZAR ARQUIVO DE ESTOQUE"
-            ], 
+            ],
             not estoque_carregado
         )
 
         opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
 
-        if not estoque_carregado and opcao != 8 and opcao != 0:
-            mostrar_erro("E11", Cor.VERMELHO)
+        if not estoque_carregado and opcao != 9 and opcao != 0:
+            mostrar_erro("E11", Cor.AMARELO)
             continue
-        elif opcao == 8:
+        elif opcao == 9:
             estoque_carregado = True
 
         opcao_escolhida = escolhas_menu.get(opcao)
 
         if opcao_escolhida:
-            opcao_escolhida(lista_livros)
+            tamanho_antes = len(sistema.livros)
+
+            opcao_escolhida()
+
+            tamanho_depois = len(sistema.livros)
+
+            if tamanho_antes != tamanho_depois and opcao != 9:
+                houve_alteracao = True
+            elif opcao == 10:
+                houve_alteracao = False
+
+        elif opcao == 0:
+            encerrar_atividades(lista_livros, houve_alteracao)
         else:
             mostrar_erro("E02", Cor.VERMELHO)
+
 
 if __name__ == "__main__":
     main()

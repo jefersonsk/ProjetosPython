@@ -1,3 +1,4 @@
 CóDIGO,TÍTULO,EDITORA,ÁREA/GÊNERO,ANO,VALOR,ESTOQUE
-1,Rambo,LPM,Ficção,2024,70.0,15
-2,O Senhor dos Anéis: A Sociedade do Anel,LPM,Fantasia,1999,110.0,19
+1,O Senhor dos Anéis: A Sociedade do Anel,LPM,Fantasia,1999
+2,O Senhor dos Anéis: As Duas Torres,LPM,Fantasia,1999
+3,O Senhor das Moscas,Nova Era,Suspense,2002
