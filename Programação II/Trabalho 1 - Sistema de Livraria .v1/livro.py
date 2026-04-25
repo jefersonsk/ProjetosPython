@@ -8,8 +8,8 @@ from utilidades import (
     pausar,
     mostrar_erro,
     fazer_buscas,
-    criar_menu,
-    verificar_numero
+    verificar_numero,
+    condicao_atendida
 )
 
 
@@ -252,36 +252,6 @@ class Livraria:
         fazer_buscas(
             self.livros, "Digite a categoria desejada: ", "area", "E05")
 
-    def filiais(self):
-        escolha_menu = {
-            1: self.cadastrar_filial,
-            2: self.listar_filiais,
-            3: self.adicionar_livros_filial
-        }
-
-        while True:
-            imprimir_cabecalho("FILIAIS", cor=Cor.AZUL)
-
-            criar_menu(
-                [
-                    "CADASTRO DE FILIAIS",
-                    "LISTAR FILIAIS",
-                    "ADICIONAR LIVRO A FILIAIS"
-                ],
-                bloqueado=False,
-                tipo="submenu"
-            )
-
-            opcao = verificar_numero(
-                "Digite a opção desejada: ", int, Cor.AMARELO)
-
-            if opcao == 0:
-                return None
-
-            opcao_escolhida = escolha_menu.get(opcao)
-
-            opcao_escolhida()
-
     def cadastrar_filial(self):
         imprimir_cabecalho("CADASTRO DE FILIAIS", cor=Cor.AZUL)
 
@@ -324,62 +294,74 @@ class Livraria:
         if verificar_lista(self.livros) or verificar_lista(self.filiais):
             mostrar_erro("E04", Cor.AMARELO)
         else:
-            while True:
-                imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)
+            filial_encontrada = self.fazer_buscas(
+                self.filiais,
+                "Digite o código da filial: ",
+                "codigo",
+                "E04",
+                tipo_dado=int
+            )
 
-                for filial in self.iliais:
-                    filial.mostrar_informacoes_resumidas()
+            livro_encontrado = self.fazer_buscas(
+                self.livros,
+                "Digite o código do livro: ",
+                "codigo",
+                "E04",
+                tipo_dado=int
+            )
 
-                imprimir_linha()
+            valor_atribuido = verificar_numero(
+                "Digite o preço do livro: R$ ", float, Cor.AMARELO)
+            quantidade_estoque = verificar_numero(
+                "Digite a quantidade em estoque: ", int, Cor.AMARELO)
 
-                codigo_filial_escolhida = verificar_numero(
-                    "Digite o código da filial: ",
-                    int,
-                )
+            filial_encontrada.adicionar_ao_estoque(
+                livro_encontrado, valor_atribuido, quantidade_estoque)
 
-                for filial in self.filiais:
-                    if codigo_filial_escolhida == filial.codigo:
-                        titulo_livro = fazer_buscas(
-                            self.livros,
-                            "Digite o título do livro: ",
-                            "titulo",
-                            "E04",
-                            retorno="s"
-                        )
+            filial_encontrada.mostrar_livros_filial()
 
-                        if titulo_livro:
-                            codigo_livro_escolhido = verificar_numero(
-                                "Digite o código do livro: ", int, Cor.AMARELO
-                            )
+    def fazer_buscas(self,
+                     lista: list,
+                     texto: str,
+                     nome_atributo: str,
+                     erro: str,
+                     operador: str = "==",
+                     tipo_dado: type = str,
+                     ) -> None:
+        """
+        Realiza a busca pelos dados conforme escolha definida pelo usuário. Se não encontrar o dado solicitado, retorna mensagem de aviso.
 
-                            for livro in self.livros:
-                                if codigo_livro_escolhido == livro.codigo:
-                                    valor = verificar_numero(
-                                        "Valor: R$ ", float
-                                    )
-                                    quantidade_estoque = verificar_numero(
-                                        "Estoque: ", int
-                                    )
+        Args:
+            lista_livros (list): Lista onde estão os dados cadastrados.
+            texto (str): Texto da pergunta que será mostrada para o usuário.
+            nome_atributo (str): Qual atributo de classe será utilizado na busca dos dados.
+            erro (str): Código de aviso, onde a mensagem será capturada no dicionário MENSAGEM_ERRO.
+            operador (str, optional): Operador que deve ser utilizado para realizar a busca, ">=", "<=" ou "==". Default é "==".
+            tipo_dado (type, optional): Tipo de dado que será informado para busca: "int", "float" ou "str". Default é "str".
+        """
+        encontrou = False
 
-                                    filial.adicionar_ao_estoque(
-                                        livro, valor, quantidade_estoque
-                                    )
+        if verificar_lista(lista):
+            mostrar_erro("E03", Cor.AMARELO)
+            return
 
-                                # else:
-                                #     imprimir_cabecalho(
-                                #         "CÓDIGO LIVRO NÃO ENCONTRADO.", cor=Cor.AMARELO)
+        while True:
+            if tipo_dado == str:
+                pesquisa = input(f"{Cor.AMARELO}{texto}{Cor.RESET}")
+            else:
+                pesquisa = verificar_numero(texto, tipo_dado, cor=Cor.AMARELO)
 
-                    else:
-                        imprimir_cabecalho(
-                            "CÓDIGO DE FILIAL NÃO LOCALIZADO.", cor=Cor.AMARELO)
+            imprimir_cabecalho("RESULTADO DA PESQUISA", cor=Cor.MAGENTA_CLARO)
 
-                # for dados_filial in lista_filiais:
-                #     dados_filial.mostrar_informacoes_filial()
+            for dados in lista:
+                dado_pesquisado = getattr(dados, nome_atributo)
 
-                # escolha = continuar(
-                #     "Deseja vincular esse livro a outra filial? (S/N) ")
+                if condicao_atendida(dado_pesquisado, pesquisa, operador):
+                    dados.mostrar_informacoes()
+                    return dados
 
-                # if escolha:
-                #     continue
-                # else:
-                #     break
+            if not encontrou:
+                mostrar_erro(erro, Cor.AMARELO)
+            else:
+                pausar()
+                # return None
