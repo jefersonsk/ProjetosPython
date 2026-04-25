@@ -243,53 +243,6 @@ def condicao_atendida(dado_livro, pesquisa, operador: str) -> bool:
     return False
 
 
-def fazer_buscas(
-    lista: list,
-    texto: str,
-    nome_atributo: str,
-    erro: str,
-    operador: str = "==",
-    tipo_dado: type = str,
-) -> None:
-    """
-    Realiza a busca pelos dados conforme escolha definida pelo usuário. Se não encontrar o dado solicitado, retorna mensagem de aviso.
-
-    Args:
-        lista_livros (list): Lista onde estão os dados cadastrados.
-        texto (str): Texto da pergunta que será mostrada para o usuário.
-        nome_atributo (str): Qual atributo de classe será utilizado na busca dos dados.
-        erro (str): Código de aviso, onde a mensagem será capturada no dicionário MENSAGEM_ERRO.
-        operador (str, optional): Operador que deve ser utilizado para realizar a busca, ">=", "<=" ou "==". Default é "==".
-        tipo_dado (type, optional): Tipo de dado que será informado para busca: "int", "float" ou "str". Default é "str".
-    """
-    encontrou = False
-
-    if verificar_lista(lista):
-        mostrar_erro("E03", Cor.AMARELO)
-        return
-
-    while True:
-        if tipo_dado == str:
-            pesquisa = input(f"{Cor.AMARELO}{texto}{Cor.RESET}")
-        else:
-            pesquisa = verificar_numero(texto, tipo_dado, cor=Cor.AMARELO)
-
-        imprimir_cabecalho("RESULTADO DA PESQUISA", cor=Cor.MAGENTA_CLARO)
-
-        for dados in lista:
-            dado_livro = getattr(dados, nome_atributo)
-
-            if condicao_atendida(dado_livro, pesquisa, operador):
-                dados.mostrar_informacoes()
-                encontrou = True
-
-        if not encontrou:
-            mostrar_erro(erro, Cor.AMARELO)
-        else:
-            pausar()
-            return
-
-
 def remover_acentos(texto: str) -> str:
     """
     Verifica o texto informado e remove acentuação e cedilha, retornando o texto normalizado.

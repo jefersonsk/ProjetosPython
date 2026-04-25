@@ -10,7 +10,6 @@ from utilidades import (
     verificar_vazio,
     pausar,
     mostrar_erro,
-    fazer_buscas,
     escolher_operador
 )
 
@@ -51,9 +50,13 @@ def inicializar_arquivo(nome_arquivo: str) -> None:
 
 
 def filiais(sistema):
-    escolha_menu = {1: sistema.cadastrar_filial,
-                    2: sistema.listar_filiais,
-                    3: sistema.adicionar_livros_filial}
+    escolha_menu = {
+        1: sistema.cadastrar_filial,
+        2: sistema.listar_filiais,
+        3: sistema.adicionar_livros_filial,
+        4: sistema.verificar_estoque_por_livro,
+        5: sistema.verificar_estoque_por_filial
+    }
 
     while True:
         imprimir_cabecalho("FILIAIS", cor=Cor.AZUL)
@@ -62,7 +65,9 @@ def filiais(sistema):
             [
                 "CADASTRO DE FILIAIS",
                 "LISTAR FILIAIS",
-                "ADICIONAR LIVRO A FILIAIS"
+                "ADICIONAR LIVRO A FILIAIS",
+                "VERIFICAR ESTOQUE POR LIVRO",
+                "VERIFICAR ESTOQUE POR FILIAL"
             ],
             bloqueado=False,
             tipo="submenu"
@@ -90,7 +95,7 @@ def continuar(texto: str) -> bool:
         return True
 
 
-def buscar_livros_preco(lista: list):
+def buscar_livros_preco(sistema):
     """
     Efetua busca dos livros utilizando como parâmetro o preço do livro, optando por resultados
     maiores (>=) ou menores (<=) do valor desejado.
@@ -99,41 +104,18 @@ def buscar_livros_preco(lista: list):
         lista (list): Lista que será usada para exibir os dados.
     """
 
-    imprimir_cabecalho("BUSCAR LIVROS POR PREÇO", cor=Cor.VERDE)
-
     operador = escolher_operador("Como deseja buscar o preço?")
 
     if operador is None:
         return
 
     fazer_buscas(
-        lista, "Digite o preço da pesquisa: R$ ", "valor", "E06", operador, float
-    )
-
-
-def buscar_quantidade_estoque(lista: list):
-    """
-    Efetua busca dos livros utilizando como parâmetro a quantidade em estoque, optando por valores
-    maiores (>=) ou menores (<=).
-
-    Args:
-        lista (list): Lista que será usada para exibir os dados.
-    """
-
-    imprimir_cabecalho("BUSCAR QUANTIDADE POR ESTOQUE", cor=Cor.VERDE)
-
-    operador = escolher_operador("Como deseja buscar a quantidade do estoque?")
-
-    if operador is None:
-        return
-
-    fazer_buscas(
         lista,
-        "Digite a quantidade em estoque: ",
-        "quantidade_estoque",
-        "E07",
+        "Digite o preço da pesquisa: R$ ",
+        "BUSCAR LIVROS POR PREÇO" "valor",
+        "E06",
         operador,
-        int,
+        float
     )
 
 
@@ -201,7 +183,7 @@ def main():
         4: sistema.buscar_livros_titulo,
         5: sistema.buscar_livros_categoria,
         6: buscar_livros_preco,
-        7: buscar_quantidade_estoque,
+        7: sistema.buscar_quantidade_estoque,
         8: valor_total_estoque,
         9: sistema.carregar_estoque,
         10: sistema.atualizar_estoque,

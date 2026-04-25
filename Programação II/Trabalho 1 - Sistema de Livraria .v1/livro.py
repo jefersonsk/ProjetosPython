@@ -7,8 +7,8 @@ from utilidades import (
     validar_ano,
     pausar,
     mostrar_erro,
-    fazer_buscas,
     verificar_numero,
+    escolher_operador,
     condicao_atendida
 )
 
@@ -237,7 +237,7 @@ class Livraria:
         """
 
         imprimir_cabecalho("BUSCAR LIVROS POR TíTULO", cor=Cor.VERDE)
-        fazer_buscas(self.livros, "Digite o título do livro: ",
+        self.fazer_buscas(self.livros, "Digite o título do livro: ",
                      "titulo", "E04")
 
     def buscar_livros_categoria(self):
@@ -249,7 +249,7 @@ class Livraria:
         """
 
         imprimir_cabecalho("BUSCAR LIVROS POR CATEGORIA", cor=Cor.VERDE)
-        fazer_buscas(
+        self.fazer_buscas(
             self.livros, "Digite a categoria desejada: ", "area", "E05")
 
     def cadastrar_filial(self):
@@ -284,31 +284,37 @@ class Livraria:
             mostrar_erro("E03", Cor.AMARELO)
         else:
             for dados in self.filiais:
-                dados.mostrar_informacoes_filial()
+                dados.mostrar_informacoes()
 
             pausar()
 
     def adicionar_livros_filial(self):
-        imprimir_cabecalho("ADICIONAR LIVRO A FILIAL", cor=Cor.VERDE)
-
         if verificar_lista(self.livros) or verificar_lista(self.filiais):
             mostrar_erro("E04", Cor.AMARELO)
         else:
             filial_encontrada = self.fazer_buscas(
                 self.filiais,
                 "Digite o código da filial: ",
+                "ADICIONAR LIVRO A FILIAL",
                 "codigo",
                 "E04",
                 tipo_dado=int
             )
 
+            if filial_encontrada is None:
+                return
+
             livro_encontrado = self.fazer_buscas(
                 self.livros,
                 "Digite o código do livro: ",
+                "ADICIONAR LIVRO A FILIAL",
                 "codigo",
                 "E04",
                 tipo_dado=int
             )
+
+            if filial_encontrada is None:
+                return
 
             valor_atribuido = verificar_numero(
                 "Digite o preço do livro: R$ ", float, Cor.AMARELO)
@@ -322,7 +328,8 @@ class Livraria:
 
     def fazer_buscas(self,
                      lista: list,
-                     texto: str,
+                     pergunta: str,
+                     cabecalho: str,
                      nome_atributo: str,
                      erro: str,
                      operador: str = "==",
@@ -346,10 +353,17 @@ class Livraria:
             return
 
         while True:
+
+            imprimir_cabecalho(cabecalho, cor=Cor.AZUL)
+            print(f"{Cor.VERDE}Para sair digite 0.{Cor.RESET}")
+
             if tipo_dado == str:
-                pesquisa = input(f"{Cor.AMARELO}{texto}{Cor.RESET}")
+                pesquisa = input(f"{Cor.AMARELO}{pergunta}{Cor.RESET}")
             else:
-                pesquisa = verificar_numero(texto, tipo_dado, cor=Cor.AMARELO)
+                pesquisa = verificar_numero(pergunta, tipo_dado, cor=Cor.AMARELO)
+
+            if pesquisa in (0, "0"):
+                return None
 
             imprimir_cabecalho("RESULTADO DA PESQUISA", cor=Cor.MAGENTA_CLARO)
 
@@ -365,3 +379,44 @@ class Livraria:
             else:
                 pausar()
                 # return None
+
+
+    def buscar_quantidade_estoque(self):
+        """
+        Efetua busca dos livros utilizando como parâmetro a quantidade em estoque, optando por valores
+        maiores (>=) ou menores (<=).
+
+        Args:
+            lista (list): Lista que será usada para exibir os dados.
+        """
+
+        operador = escolher_operador("Como deseja buscar a quantidade do estoque?")
+
+        if operador is None:
+            return
+
+        self.fazer_buscas(
+            self.filiais,
+            "Digite a quantidade em estoque: ",
+            "BUSCAR POR QUANTIDADE EM ESTOQUE",
+            "quantidade_estoque",
+            "E07",
+            operador,
+            int,
+        )
+
+    def verificar_estoque_por_livro(self):
+        if verificar_lista(self.livros) or verificar_lista(self.filiais):
+            mostrar_erro("E04", Cor.AMARELO)
+        else:
+            livro_encontrado = self.fazer_buscas(
+                self.livros,
+                "Digite o código do livro: ",
+                "VERIFICAR ESTOQUE POR LIVRO",
+                "codigo",
+                "E04",
+                tipo_dado=int
+            )
+
+            if livro_encontrado is None:
+                return
