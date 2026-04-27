@@ -1,2 +1,1 @@
-
-    def mostrar_informacoes_resumidas(self):
+encerrar_atividades(sistema, houve_alteracao)

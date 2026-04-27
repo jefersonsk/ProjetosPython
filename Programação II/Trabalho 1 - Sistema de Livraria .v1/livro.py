@@ -246,8 +246,12 @@ class Livraria:
         """
 
         self.salvar_livro("livraria.txt")
+        self.salvar_filial("filial.txt")
+        self.salvar_estoque_completo("estoque_completo.txt")
 
-        imprimir_cabecalho("ARQUIVO ATUALIZADO.", cor=Cor.VERDE)
+        imprimir_cabecalho(
+            "TODOS OS ARQUIVOS ATUALIZADOS COM SUCESSO.", cor=Cor.VERDE
+        )
 
     def salvar_livro(self, nome_arquivo: str) -> None:
         """
@@ -266,7 +270,7 @@ class Livraria:
                 dados = livro.formatar_para_csv()
                 arquivo.write(dados + "\n")
 
-            imprimir_cabecalho("DADOS GRAVADOS COM SUCESSO.", cor=Cor.VERDE)
+            # imprimir_cabecalho("DADOS GRAVADOS COM SUCESSO.", cor=Cor.VERDE)
 
     def salvar_filial(self, nome_arquivo: str) -> None:
         with open(nome_arquivo, "w") as arquivo:
@@ -277,7 +281,7 @@ class Livraria:
                 dados = filial.formatar_para_csv()
                 arquivo.write(dados + "\n")
 
-            imprimir_cabecalho("DADOS GRAVADOS COM SUCESSO.", cor=Cor.VERDE)
+        # imprimir_cabecalho("DADOS GRAVADOS COM SUCESSO.", cor=Cor.VERDE)
 
     def salvar_estoque_completo(self, nome_arquivo: str) -> None:
         with open(nome_arquivo, "w") as arquivo:
@@ -291,6 +295,8 @@ class Livraria:
                 for item in filial.livros:
                     dados_livros = item.formatar_para_csv()
                     arquivo.write(dados_livros + "\n")
+
+        #  imprimir_cabecalho("ESTOQUE GRAVADO COM SUCESSO.", cor=Cor.VERDE)
 
     def buscar_livros_titulo(self):
         """
@@ -378,7 +384,12 @@ class Livraria:
                 tipo_dado=int
             )
 
-            if filial_encontrada is None:
+            for item in self.filiais:
+                if item.livros.codigo == livro_encontrado.codigo:
+                    print("CADASTRO DUPLICADO")
+                    pausar()
+
+            if livro_encontrado is None:
                 return
 
             valor_atribuido = verificar_numero(
@@ -421,7 +432,7 @@ class Livraria:
         while True:
 
             imprimir_cabecalho(cabecalho, cor=Cor.AZUL)
-            print(f"{Cor.VERDE}Para sair digite 0.{Cor.RESET}")
+            print(f"{Cor.VERDE}Para sair digite 0.{Cor.RESET}") # Arrumar layout mensagem
 
             if tipo_dado == str:
                 pesquisa = input(f"{Cor.AMARELO}{pergunta}{Cor.RESET}")

@@ -138,7 +138,7 @@ def valor_total_estoque(lista: list):
     pausar()
 
 
-def encerrar_atividades(lista: list, alteracao: bool) -> None:
+def encerrar_atividades(sistema, alteracao: bool) -> None:
     """
     Encerra o sistema.
 
@@ -149,7 +149,7 @@ def encerrar_atividades(lista: list, alteracao: bool) -> None:
             False caso não tenha dados.
     """
 
-    if not verificar_lista(lista) and alteracao:
+    if not verificar_lista(sistema) and alteracao:
 
         imprimir_cabecalho(
             "Deseja atualizar arquivo de estoque? ", cor=Cor.AZUL)
@@ -158,7 +158,7 @@ def encerrar_atividades(lista: list, alteracao: bool) -> None:
         opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
 
         if opcao == 1:
-            salvar_livro(lista, nome_arquivo="livraria.txt")
+            sistema.atualizar_estoque()
 
     print(f"\n{Cor.VERDE}<<< SISTEMA ENCERRADO >>>{Cor.RESET}\n")
     exit()
@@ -231,11 +231,11 @@ def main():
         opcao_escolhida = escolhas_menu.get(opcao)
 
         if opcao_escolhida:
-            tamanho_antes = len(sistema.livros)
+            tamanho_antes = len(sistema.livros) + len(sistema.filiais)
 
             opcao_escolhida()
 
-            tamanho_depois = len(sistema.livros)
+            tamanho_depois = len(sistema.livros) + len(sistema.filiais)
 
             if tamanho_antes != tamanho_depois and opcao != 9:
                 houve_alteracao = True
@@ -243,7 +243,7 @@ def main():
                 houve_alteracao = False
 
         elif opcao == 0:
-            encerrar_atividades(lista_livros, houve_alteracao)
+            encerrar_atividades(sistema, houve_alteracao)
         else:
             mostrar_erro("E02", Cor.VERMELHO)
 
