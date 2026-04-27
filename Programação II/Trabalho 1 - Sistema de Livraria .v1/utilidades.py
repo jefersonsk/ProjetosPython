@@ -30,7 +30,8 @@ class Erro:
         "E08": "Ano inválido.",
         "E09": "Campo não pode ser em branco.",
         "E10": "Dados já foram carregados para o sistema.",
-        "E11": "Dados do arquivo não carregados.\nCarregar dados antes de utilizar o aplicativo"
+        "E11": "Dados do arquivo não carregados.\nCarregar dados antes de utilizar o aplicativo",
+        "E12": "Filial não localizada."
     }
 
 
@@ -66,7 +67,7 @@ def criar_menu(lista: list, bloqueado: bool = False, tipo: str = "principal") ->
 
 
 def imprimir_cabecalho(
-        texto: str, quantidade: int = 60, cor: str = Cor.BRANCO) -> None:
+        texto: str, quantidade: int = 70, cor: str = Cor.BRANCO) -> None:
     """
     Cria cabeçalhos com cores.
 
@@ -80,7 +81,7 @@ def imprimir_cabecalho(
     imprimir_linha()
 
 
-def imprimir_linha(caracter: str = "-", quantidade: int = 60) -> None:
+def imprimir_linha(caracter: str = "-", quantidade: int = 70) -> None:
     """
     Cria uma linha com o caracter e quantidade informados.
 
