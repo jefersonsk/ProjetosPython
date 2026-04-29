@@ -213,6 +213,8 @@ class Livraria:
 
         if verificar_lista(self.livros):
             self.carregar_dados("livraria.txt")
+            # self.carregar_dados("estoque_completo.txt")
+            # self.carregar_dados("filial.txt")
             imprimir_cabecalho("DADOS CARREGADOS", cor=Cor.VERDE)
             pausar()
         else:
@@ -281,8 +283,6 @@ class Livraria:
                 dados = filial.formatar_para_csv()
                 arquivo.write(dados + "\n")
 
-        # imprimir_cabecalho("DADOS GRAVADOS COM SUCESSO.", cor=Cor.VERDE)
-
     def salvar_estoque_completo(self, nome_arquivo: str) -> None:
         with open(nome_arquivo, "w") as arquivo:
             cabecalho = "CÓDIGO,NOME,ENDEREÇO,CONTATO\n"
@@ -295,8 +295,6 @@ class Livraria:
                 for item in filial.livros:
                     dados_livros = item.formatar_para_csv()
                     arquivo.write(dados_livros + "\n")
-
-        #  imprimir_cabecalho("ESTOQUE GRAVADO COM SUCESSO.", cor=Cor.VERDE)
 
     def buscar_livros_titulo(self):
         """
@@ -384,10 +382,13 @@ class Livraria:
                 tipo_dado=int
             )
 
-            for item in self.filiais:
-                if item.livros.codigo == livro_encontrado.codigo:
+            for item in filial_encontrada.livros:
+                if item.livro.codigo == livro_encontrado.codigo:
                     print("CADASTRO DUPLICADO")
+
                     pausar()
+
+                    return
 
             if livro_encontrado is None:
                 return
@@ -432,7 +433,8 @@ class Livraria:
         while True:
 
             imprimir_cabecalho(cabecalho, cor=Cor.AZUL)
-            print(f"{Cor.VERDE}Para sair digite 0.{Cor.RESET}") # Arrumar layout mensagem
+            # Arrumar layout mensagem
+            print(f"{Cor.VERDE}Para sair digite 0.{Cor.RESET}")
 
             if tipo_dado == str:
                 pesquisa = input(f"{Cor.AMARELO}{pergunta}{Cor.RESET}")
