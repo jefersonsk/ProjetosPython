@@ -1,4 +1,4 @@
-CÛDIGO,TÕTULO,EDITORA,¡REA/G NERO,ANO,VALOR,ESTOQUE
-1,O Senhor dos AnÈis: A Sociedade do Anel,LPM,Fantasia,1999
-2,O Senhor dos AnÈis: As Duas Torres,LPM,Fantasia,1999
-3,O Senhor das Moscas,Nova Era,Suspense,2002
+C√≥DIGO,T√çTULO,EDITORA,√ÅREA/G√äNERO,ANO,VALOR,ESTOQUE
+1,O Senhor dos An√©is: A Sociedade do Anel,LPM,Fantasia,1999
+2,Rambo,Pipoca e Nanquim,Romance,2024
+3,Introdu√ß√£o ao Python,Novatec,Inform√°tica,2019

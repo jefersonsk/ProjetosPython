@@ -1,2 +1,7 @@
-C�DIGO,NOME,ENDERE�O,CONTATO
-#FL1,Viam�o,7 Setembro, 92,51 3322-2233
+CÓDIGO,NOME,ENDEREÇO,CONTATO
+#FL1,Viamão,7 de Setembro, 92
+1,O Senhor dos Anéis: A Sociedade do Anel,1999,LPM,R$89.00,10
+2,Rambo,2024,Pipoca e Nanquim,R$69.00,15
+3,Introdução ao Python,2019,Novatec,R$50.00,10
+#FL2,2,Otto, 54,51 9999-8888
+1,O Senhor dos Anéis: A Sociedade do Anel,1999,LPM,R$59.00,18

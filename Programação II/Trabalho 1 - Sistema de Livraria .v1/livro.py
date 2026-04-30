@@ -56,6 +56,22 @@ class ItemEstoque:
             f"{self.quantidade_estoque}"
         )
 
+    def mostrar_informacoes(self):
+        print(
+            f"{Cor.AZUL}Código: "
+            f"{Cor.AMARELO}Cod#{self.livro.codigo:04}{Cor.RESET}"
+        )
+        print(
+            f"{Cor.AZUL}Título / Editora: {Cor.AMARELO}{self.livro.titulo}"
+            f" / {self.livro.editora}{Cor.RESET}"
+        )
+        print(
+            f"{Cor.AZUL}Preço: {Cor.AMARELO}R$ {self.valor:<40.2f}{Cor.RESET}"
+            f"{Cor.AZUL}Quantidade:  {Cor.AMARELO}{self.quantidade_estoque}"
+            f"{Cor.RESET}"
+        )
+        imprimir_linha()
+
 
 class Filial:
     def __init__(self, codigo, nome, endereco, contato):
@@ -132,6 +148,7 @@ class Livraria:
     def __init__(self, livros, filiais):
         self.livros = livros
         self.filiais = filiais
+        self.alteracoes_pendentes = False
 
     def cadastrar_livros(self):
         """
@@ -166,9 +183,11 @@ class Livraria:
 
         imprimir_cabecalho("LIVRO CADASTRADO COM SUCESSO.", cor=Cor.VERDE)
 
+        self.alteracoes_pendentes = True
+
         pausar()
 
-    def carregar_dados(self, nome_arquivo) -> list:
+    def carregar_dados(self, nome_arquivo: str, tipo: str) -> list:
         """
         Carrega os dados de um arquivo em uma lista no sistema.
 
@@ -180,25 +199,77 @@ class Livraria:
             list: Retorna lista com os dados já carregados.
         """
 
-        with open(nome_arquivo, "r") as arquivo:
+        with open(nome_arquivo, "r", encoding="utf-8") as arquivo:
             arquivo.readline()
 
             for dados in arquivo:
                 try:
-                    cache = dados.strip().split(",")
-                    dados_livro = Livro(
-                        codigo=int(cache[0]),
-                        titulo=cache[1],
-                        editora=cache[2],
-                        area=cache[3],
-                        ano=int(cache[4])
-                    )
+                    linha_limpa = dados.strip()
 
-                    self.livros.append(dados_livro)
+                    if not linha_limpa:
+                        continue
+
+                    cache = dados.strip().split(",")
+
+                    if tipo == "livro":
+                        dados_livro = Livro(
+                            codigo=int(cache[0]),
+                            titulo=cache[1],
+                            editora=cache[2],
+                            area=cache[3],
+                            ano=int(cache[4])
+                        )
+
+                        self.livros.append(dados_livro)
+
+                    elif tipo == "filial":
+                        dados_filial = Filial(
+                            codigo=int(cache[0].replace("#FL", "")),
+                            nome=cache[1],
+                            endereco=cache[2],
+                            contato=cache[3]
+                        )
+
+                        self.filiais.append(dados_filial)
+
+                    elif tipo == "estoque_completo":
+                        if linha_limpa.startswith("#FL"):
+                            filial_atual = None
+
+                            codigo_filial = int(cache[0].replace("#FL", ""))
+
+                            for item_filial in self.filiais:
+                                if item_filial.codigo == codigo_filial:
+                                    filial_atual = item_filial
+                                    break
+                            if filial_atual is None:
+                                mostrar_erro("E12", Cor.VERMELHO)
+
+                        else:
+                            if filial_atual is not None:
+                                codigo_livro = int(cache[0])
+                                preco = float(cache[4].replace("R$", ""))
+                                quantidade = int(cache[5])
+
+                                livro_atual = None
+
+                                for item_livro in self.livros:
+                                    if item_livro.codigo == codigo_livro:
+                                        livro_atual = item_livro
+                                        break
+
+                                if livro_atual:
+                                    filial_atual.adicionar_ao_estoque(
+                                        livro_atual,
+                                        preco,
+                                        quantidade
+                                    )
 
                 except (ValueError, IndexError):
                     print(
-                        f"{Cor.AMARELO}Aviso: Linha corrompida ignorada.{Cor.RESET}")
+                        f"{Cor.AMARELO}Aviso: Linha corrompida ignorada."
+                        f"{Cor.RESET}"
+                    )
 
     def carregar_estoque(self) -> list:
         """
@@ -212,9 +283,10 @@ class Livraria:
         """
 
         if verificar_lista(self.livros):
-            self.carregar_dados("livraria.txt")
-            # self.carregar_dados("estoque_completo.txt")
-            # self.carregar_dados("filial.txt")
+            self.carregar_dados("livraria.txt", "livro")
+            self.carregar_dados("filial.txt", "filial")
+            self.carregar_dados("estoque_completo.txt", "estoque_completo")
+
             imprimir_cabecalho("DADOS CARREGADOS", cor=Cor.VERDE)
             pausar()
         else:
@@ -264,7 +336,7 @@ class Livraria:
             nome_arquivo (str): Nome do arquivo em que os dados serão salvos.
         """
 
-        with open(nome_arquivo, "w") as arquivo:
+        with open(nome_arquivo, "w", encoding="utf-8") as arquivo:
             cabecalho = "CóDIGO,TÍTULO,EDITORA,ÁREA/GÊNERO,ANO,VALOR,ESTOQUE\n"
             arquivo.write(cabecalho)
 
@@ -272,10 +344,8 @@ class Livraria:
                 dados = livro.formatar_para_csv()
                 arquivo.write(dados + "\n")
 
-            # imprimir_cabecalho("DADOS GRAVADOS COM SUCESSO.", cor=Cor.VERDE)
-
     def salvar_filial(self, nome_arquivo: str) -> None:
-        with open(nome_arquivo, "w") as arquivo:
+        with open(nome_arquivo, "w", encoding="utf-8") as arquivo:
             cabecalho = "CÓDIGO,NOME,ENDEREÇO,CONTATO\n"
             arquivo.write(cabecalho)
 
@@ -284,7 +354,7 @@ class Livraria:
                 arquivo.write(dados + "\n")
 
     def salvar_estoque_completo(self, nome_arquivo: str) -> None:
-        with open(nome_arquivo, "w") as arquivo:
+        with open(nome_arquivo, "w", encoding="utf-8") as arquivo:
             cabecalho = "CÓDIGO,NOME,ENDEREÇO,CONTATO\n"
             arquivo.write(cabecalho)
 
@@ -304,9 +374,14 @@ class Livraria:
             lista (list): Lista que será usada para exibir os dados.
         """
 
-        imprimir_cabecalho("BUSCAR LIVROS POR TíTULO", cor=Cor.VERDE)
-        self.fazer_buscas(self.livros, "Digite o título do livro: ",
-                          "titulo", "E04")
+        # imprimir_cabecalho("BUSCAR LIVROS POR TíTULO", cor=Cor.VERDE)
+        self.fazer_buscas(
+            self.livros,
+            "Digite o título do livro",
+            "BUSCAR LIVROS POR TíTULO",
+            "titulo",
+            "E04"
+        )
 
     def buscar_livros_categoria(self):
         """
@@ -316,9 +391,13 @@ class Livraria:
             lista (list): Lista que será usada para exibir os dados.
         """
 
-        imprimir_cabecalho("BUSCAR LIVROS POR CATEGORIA", cor=Cor.VERDE)
         self.fazer_buscas(
-            self.livros, "Digite a categoria desejada: ", "area", "E05")
+            self.livros,
+            "Digite a categoria desejada",
+            "BUSCAR LIVROS POR CATEGORIA",
+            "area",
+            "E05"
+        )
 
     def cadastrar_filial(self):
         imprimir_cabecalho("CADASTRO DE FILIAIS", cor=Cor.AZUL)
@@ -343,6 +422,8 @@ class Livraria:
 
         imprimir_cabecalho("FILIAL CADASTRADA COM SUCESSO.", cor=Cor.VERDE)
 
+        self.alteracoes_pendentes = True
+
         pausar()
 
     def listar_filiais(self):
@@ -363,7 +444,7 @@ class Livraria:
         else:
             filial_encontrada = self.fazer_buscas(
                 self.filiais,
-                "Digite o código da filial: ",
+                "Digite o código da filial",
                 "ADICIONAR LIVRO A FILIAL",
                 "codigo",
                 "E04",
@@ -375,7 +456,7 @@ class Livraria:
 
             livro_encontrado = self.fazer_buscas(
                 self.livros,
-                "Digite o código do livro: ",
+                "Digite o código do livro",
                 "ADICIONAR LIVRO A FILIAL",
                 "codigo",
                 "E04",
@@ -403,6 +484,8 @@ class Livraria:
 
             filial_encontrada.mostrar_livros_filial()
 
+            self.alteracoes_pendentes = True
+
     def fazer_buscas(self,
                      lista: list,
                      pergunta: str,
@@ -411,6 +494,7 @@ class Livraria:
                      erro: str,
                      operador: str = "==",
                      tipo_dado: type = str,
+                     sufixo: str = ""
                      ) -> None:
         """
         Realiza a busca pelos dados conforme escolha definida pelo usuário.
@@ -425,6 +509,7 @@ class Livraria:
             tipo_dado (type, optional): Tipo de dado que será informado para busca: "int", "float" ou "str". Default é "str".
         """
         encontrou = False
+        prompt_completo = f"{pergunta} [ou 0 para SAIR]: {sufixo} "
 
         if verificar_lista(lista):
             mostrar_erro("E03", Cor.AMARELO)
@@ -433,14 +518,13 @@ class Livraria:
         while True:
 
             imprimir_cabecalho(cabecalho, cor=Cor.AZUL)
-            # Arrumar layout mensagem
-            print(f"{Cor.VERDE}Para sair digite 0.{Cor.RESET}")
 
             if tipo_dado == str:
-                pesquisa = input(f"{Cor.AMARELO}{pergunta}{Cor.RESET}")
+                pesquisa = input(
+                    f"{Cor.AMARELO}{prompt_completo}{Cor.RESET}")
             else:
                 pesquisa = verificar_numero(
-                    pergunta, tipo_dado, cor=Cor.AMARELO)
+                    prompt_completo, tipo_dado, cor=Cor.AMARELO)
 
             if pesquisa in (0, "0"):
                 return None
@@ -452,13 +536,13 @@ class Livraria:
 
                 if condicao_atendida(dado_pesquisado, pesquisa, operador):
                     dados.mostrar_informacoes()
-                    return dados
+                    encontrou = True
 
             if not encontrou:
                 mostrar_erro(erro, Cor.AMARELO)
             else:
                 pausar()
-                # return None
+                return
 
     def buscar_quantidade_estoque(self):
         """
@@ -469,6 +553,9 @@ class Livraria:
             lista (list): Lista que será usada para exibir os dados.
         """
 
+        todos_os_livros = [
+            livro for filial in self.filiais for livro in filial.livros]
+
         operador = escolher_operador(
             "Como deseja buscar a quantidade do estoque?")
 
@@ -476,8 +563,8 @@ class Livraria:
             return
 
         self.fazer_buscas(
-            self.filiais,
-            "Digite a quantidade em estoque: ",
+            todos_os_livros,
+            "Digite a quantidade em estoque",
             "BUSCAR POR QUANTIDADE EM ESTOQUE",
             "quantidade_estoque",
             "E07",
@@ -494,7 +581,7 @@ class Livraria:
         else:
             livro_escolhido = self.fazer_buscas(
                 self.livros,
-                "Digite o código do livro: ",
+                "Digite o código do livro",
                 "VERIFICAR ESTOQUE POR LIVRO",
                 "codigo",
                 "E04",
@@ -546,7 +633,7 @@ class Livraria:
         else:
             filial_escolhida = self.fazer_buscas(
                 self.filiais,
-                "Digite o código da filial: ",
+                "Digite o código da filial",
                 "VERIFICAR ESTOQUE DA FILIAL",
                 "codigo",
                 "E12",
@@ -559,3 +646,57 @@ class Livraria:
             filial_escolhida.mostrar_livros_filial()
 
             pausar()
+
+    def buscar_livros_preco(self):
+        """
+        Efetua busca dos livros utilizando como parâmetro o preço do livro,
+        optando por resultados maiores (>=) ou menores (<=) do valor desejado.
+
+        Args:
+            lista (list): Lista que será usada para exibir os dados.
+        """
+
+        todos_os_livros = [
+            livro for filial in self.filiais for livro in filial.livros
+        ]
+
+        operador = escolher_operador("Como deseja buscar o preço?")
+
+        if operador is None:
+            return
+
+        self.fazer_buscas(
+            todos_os_livros,
+            "Digite o preço da pesquisa",
+            "BUSCAR LIVROS POR PREÇO",
+            "valor",
+            "E06",
+            operador,
+            float,
+            "R$"
+        )
+
+    def valor_total_estoque(self):
+        """
+        Calcula o valor total em estoque.
+
+        Args:
+            lista (list): Lista que será usada para exibir os dados.
+        """
+
+        todos_os_livros = [
+            livro for filial in self.filiais for livro in filial.livros
+        ]
+
+        imprimir_cabecalho("VALOR TOTAL EM ESTOQUE", cor=Cor.VERDE)
+
+        valor_total = sum(
+            dados.calcular_valor_total() for dados in todos_os_livros
+        )
+
+        print(
+            f"{Cor.VERDE}Valor total em estoque: "
+            f"{Cor.AMARELO}R$ {valor_total:.2f}{Cor.RESET}"
+        )
+
+        pausar()

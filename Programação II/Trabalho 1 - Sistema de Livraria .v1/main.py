@@ -95,49 +95,6 @@ def continuar(texto: str) -> bool:
         return True
 
 
-def buscar_livros_preco(sistema):
-    """
-    Efetua busca dos livros utilizando como parâmetro o preço do livro, optando por resultados
-    maiores (>=) ou menores (<=) do valor desejado.
-
-    Args:
-        lista (list): Lista que será usada para exibir os dados.
-    """
-
-    operador = escolher_operador("Como deseja buscar o preço?")
-
-    if operador is None:
-        return
-
-    fazer_buscas(
-        lista,
-        "Digite o preço da pesquisa: R$ ",
-        "BUSCAR LIVROS POR PREÇO" "valor",
-        "E06",
-        operador,
-        float
-    )
-
-
-def valor_total_estoque(lista: list):
-    """
-    Calcula o valor total em estoque.
-
-    Args:
-        lista (list): Lista que será usada para exibir os dados.
-    """
-
-    valor_total = 0
-
-    imprimir_cabecalho("VALOR TOTAL EM ESTOQUE", cor=Cor.VERDE)
-
-    valor_total = sum(
-        dados.valor * dados.quantidade_estoque for dados in lista)
-
-    print(f"{Cor.VERDE}Valor total em estoque: {Cor.AMARELO}R$ {valor_total:.2f}{Cor.RESET}")
-    pausar()
-
-
 def encerrar_atividades(sistema, alteracao: bool) -> None:
     """
     Encerra o sistema.
@@ -182,9 +139,9 @@ def main():
         3: sistema.listar_dados,
         4: sistema.buscar_livros_titulo,
         5: sistema.buscar_livros_categoria,
-        6: buscar_livros_preco,
+        6: sistema.buscar_livros_preco,
         7: sistema.buscar_quantidade_estoque,
-        8: valor_total_estoque,
+        8: sistema.valor_total_estoque,
         9: sistema.carregar_estoque,
         10: sistema.atualizar_estoque,
     }
@@ -193,7 +150,7 @@ def main():
 
     inicializar_arquivo("livraria.txt")
 
-    with open("livraria.txt", "r") as arquivo:
+    with open("livraria.txt", "r", encoding="utf-8") as arquivo:
         linhas = arquivo.readlines()
 
     if len(linhas) <= 1:
@@ -237,7 +194,7 @@ def main():
 
             tamanho_depois = len(sistema.livros) + len(sistema.filiais)
 
-            if tamanho_antes != tamanho_depois and opcao != 9:
+            if sistema.alteracoes_pendentes:
                 houve_alteracao = True
             elif opcao == 10:
                 houve_alteracao = False
