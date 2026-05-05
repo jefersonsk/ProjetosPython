@@ -9,7 +9,8 @@ from utilidades import (
     mostrar_erro,
     verificar_numero,
     escolher_operador,
-    condicao_atendida
+    condicao_atendida,
+    continuar
 )
 
 
@@ -97,6 +98,8 @@ class Filial:
         print(f"{Cor.AZUL}Endereço: {Cor.AMARELO}{self.endereco}{Cor.RESET}")
         print(f"{Cor.AZUL}Contato: {Cor.AMARELO}{self.contato}{Cor.RESET}")
 
+        imprimir_linha()
+
     def mostrar_informacoes_resumidas(self):
         imprimir_cabecalho(
             "FILIAL",
@@ -107,6 +110,8 @@ class Filial:
             f"{Cor.CIANO_CLARO}#FL{self.codigo:02}{Cor.RESET} "
             f"{Cor.VERDE_CLARO}Nome: {Cor.CIANO_CLARO}{self.nome}{Cor.RESET}"
         )
+
+        imprimir_linha()
 
     def mostrar_livros_filial(self):
         valor_total_estoque = 0
@@ -190,6 +195,46 @@ class Livraria:
         imprimir_cabecalho("LIVRO CADASTRADO COM SUCESSO.", cor=Cor.VERDE)
 
         self.alteracoes_pendentes = True
+
+        if not verificar_lista(self.filiais):
+            escolha = continuar(
+                f"{Cor.AMARELO}"
+                f"Deseja cadastrar este livro em uma filial agora? (S/N) "
+                f"{Cor.RESET}"
+            )
+
+            while escolha:
+                livro_novo = self.livros[-1]
+
+                filial_encontrada = self.fazer_buscas(
+                    self.filiais,
+                    "Digite o código da filial",
+                    "ADICIONAR LIVRO A FILIAL",
+                    "codigo",
+                    "E04",
+                    tipo_dado=int
+                )
+
+                if filial_encontrada is not None:
+                    valor_atribuido = verificar_numero(
+                        "Digite o preço do livro: R$ ", float, Cor.AMARELO
+                    )
+                    quantidade_estoque = verificar_numero(
+                        "Digite a quantidade em estoque: ", int, Cor.AMARELO
+                    )
+
+                    filial_encontrada.adicionar_ao_estoque(
+                        livro_novo, valor_atribuido, quantidade_estoque
+                    )
+                    filial_encontrada.mostrar_livros_filial()
+                else:
+                    break
+
+                escolha = continuar(
+                    f"{Cor.AMARELO}"
+                    f"Deseja cadastrar o livro em outra filial? (S/N) "
+                    f"{Cor.RESET}"
+                )
 
         pausar()
 
@@ -430,7 +475,43 @@ class Livraria:
 
         self.alteracoes_pendentes = True
 
-        pausar()
+        if not verificar_lista(self.livros):
+            escolha = continuar(
+                f"{Cor.AMARELO}Deseja cadastrar livros nesta filial? (S/N) "
+                f"{Cor.RESET}"
+            )
+
+            while escolha:
+                filial_nova = self.filiais[-1]
+
+                livro_encontrado = self.fazer_buscas(
+                    self.livros,
+                    "Digite o código do livro",
+                    "ADICIONAR LIVRO A FILIAL",
+                    "codigo",
+                    "E04",
+                    tipo_dado=int
+                )
+
+                if livro_encontrado is not None:
+                    valor_atribuido = verificar_numero(
+                        "Digite o preço do livro: R$ ", float, Cor.AMARELO
+                    )
+                    quantidade_estoque = verificar_numero(
+                        "Digite a quantidade em estoque: ", int, Cor.AMARELO
+                    )
+
+                    filial_nova.adicionar_ao_estoque(
+                        livro_encontrado, valor_atribuido, quantidade_estoque
+                    )
+                    filial_nova.mostrar_livros_filial()
+                else:
+                    break
+
+                escolha = continuar(
+                    f"{Cor.AMARELO}Deseja cadastrar outro livro? (S/N) "
+                    f"{Cor.RESET}"
+                )
 
     def listar_filiais(self):
         imprimir_cabecalho("LISTA DE FILIAIS", cor=Cor.VERDE)

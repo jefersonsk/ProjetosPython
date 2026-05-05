@@ -220,6 +220,20 @@ def verificar_numero(
             mostrar_erro("E01", Cor.VERMELHO)
 
 
+
+def continuar(texto: str) -> bool:
+
+    while True:
+        opcao = input(texto)
+
+        if opcao.upper() == "S":
+            return True
+        elif opcao.upper() == "N":
+            return False
+        else:
+            mostrar_erro("E02", Cor.VERMELHO)
+
+
 def validar_ano(texto: str, cor: str = Cor.BRANCO) -> int:
     """
     Valida o ano digitado.

@@ -109,18 +109,6 @@ def relatorios(sistema):
     executar_submenu("RELATÓRIOS", lista_opcoes, escolhas_menu)
 
 
-def continuar(texto: str) -> bool:
-    opcao = input(texto)
-
-    if opcao.upper() == "S":
-        return True
-    elif opcao.upper() == "N":
-        return False
-    else:
-        mostrar_erro("E02", Cor.VERMELHO)
-        return True
-
-
 def encerrar_atividades(sistema, alteracao: bool) -> None:
     """
     Encerra o sistema.
