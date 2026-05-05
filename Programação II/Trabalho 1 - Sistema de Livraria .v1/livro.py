@@ -98,17 +98,23 @@ class Filial:
         print(f"{Cor.AZUL}Contato: {Cor.AMARELO}{self.contato}{Cor.RESET}")
 
     def mostrar_informacoes_resumidas(self):
+        imprimir_cabecalho(
+            "FILIAL",
+            cor=Cor.AZUL
+        )
         print(
-            f"{Cor.AZUL}Código Filial: "
-            f"{Cor.AMARELO}{self.codigo:02}{Cor.RESET} "
-            f"{Cor.AZUL}Nome: {Cor.AMARELO}{self.nome}{Cor.RESET}"
+            f"{Cor.VERDE_CLARO}Código Filial: "
+            f"{Cor.CIANO_CLARO}#FL{self.codigo:02}{Cor.RESET} "
+            f"{Cor.VERDE_CLARO}Nome: {Cor.CIANO_CLARO}{self.nome}{Cor.RESET}"
         )
 
     def mostrar_livros_filial(self):
         valor_total_estoque = 0
 
         imprimir_cabecalho(
-            f"{Cor.AZUL}LISTAGEM DE LIVROS CADASTRADOS NA FILIAL {Cor.RESET}")
+            "LISTAGEM DE LIVROS CADASTRADOS NA FILIAL",
+            cor=Cor.AZUL
+        )
 
         if not self.livros:
             print("Nenhum livro cadastrado na filial.")
@@ -292,7 +298,7 @@ class Livraria:
         else:
             mostrar_erro("E10", Cor.VERMELHO)
 
-    def listar_dados(self):
+    def listar_livros(self):
         """
         Exibe todos os dados de uma lista. Caso ela esteja em branco,
         uma mensagem de erro é exibida.
@@ -509,6 +515,7 @@ class Livraria:
             tipo_dado (type, optional): Tipo de dado que será informado para busca: "int", "float" ou "str". Default é "str".
         """
         encontrou = False
+        objeto_encontrado = None
         prompt_completo = f"{pergunta} [ou 0 para SAIR]: {sufixo} "
 
         if verificar_lista(lista):
@@ -537,12 +544,13 @@ class Livraria:
                 if condicao_atendida(dado_pesquisado, pesquisa, operador):
                     dados.mostrar_informacoes()
                     encontrou = True
+                    objeto_encontrado = dados
 
             if not encontrou:
                 mostrar_erro(erro, Cor.AMARELO)
             else:
-                pausar()
-                return
+                # pausar()
+                return objeto_encontrado
 
     def buscar_quantidade_estoque(self):
         """
@@ -572,7 +580,7 @@ class Livraria:
             int,
         )
 
-    def verificar_estoque_por_livro(self):
+    def relatorio_estoque_por_livro(self):
         valor_total_estoque = 0
         livro_no_estoque = False
 
@@ -624,7 +632,7 @@ class Livraria:
 
             pausar()
 
-    def verificar_estoque_por_filial(self):
+    def relatorio_estoque_por_filial(self):
         filial_cadastrada = False
         valor_total_estoque = 0
 
@@ -646,6 +654,20 @@ class Livraria:
             filial_escolhida.mostrar_livros_filial()
 
             pausar()
+
+    def relatorio_completo(self):
+        imprimir_cabecalho("RELATÓRIO COMPLETO", cor=Cor.AZUL)
+
+        if verificar_lista(self.livros) or verificar_lista(self.filiais):
+            mostrar_erro("E06", Cor.AMARELO)
+        else:
+            for item in self.filiais:
+                item.mostrar_informacoes_resumidas()
+                item.mostrar_livros_filial()
+
+                imprimir_linha()
+
+            self.valor_total_estoque()
 
     def buscar_livros_preco(self):
         """

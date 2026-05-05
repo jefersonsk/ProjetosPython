@@ -53,7 +53,7 @@ def criar_menu(lista: list, bloqueado: bool = False, tipo: str = "principal") ->
             voltar para o menu anterior. Valor default é "principal".
     """
     for i, item in enumerate(lista, start=1):
-        if bloqueado and i != 9:
+        if bloqueado and i != 5:
             print(f"{Cor.CINZA}{i} - {Cor.CINZA}{item}{Cor.RESET}")
         else:
             print(f"{Cor.AZUL}{i} - {Cor.VERDE}{item}{Cor.RESET}")
@@ -64,6 +64,29 @@ def criar_menu(lista: list, bloqueado: bool = False, tipo: str = "principal") ->
         print(f"{Cor.AZUL}0 - {Cor.VERDE}VOLTAR AO MENU PRINCIPAL{Cor.RESET}")
 
     imprimir_linha()
+
+
+def executar_submenu(titulo_menu, lista_opcoes, escolhas_menu):
+    while True:
+        imprimir_cabecalho(titulo_menu.upper(), cor=Cor.AZUL)
+
+        criar_menu(
+            lista_opcoes,
+            bloqueado=False,
+            tipo="submenu"
+        )
+
+        opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
+
+        if opcao == 0:
+            return None
+
+        opcao_escolhida = escolhas_menu.get(opcao)
+
+        if opcao_escolhida:
+            opcao_escolhida()
+        else:
+            mostrar_erro("E02", Cor.VERMELHO)
 
 
 def imprimir_cabecalho(

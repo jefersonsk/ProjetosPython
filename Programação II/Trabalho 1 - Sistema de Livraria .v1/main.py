@@ -3,14 +3,13 @@ from livro import Livro, Filial, Livraria
 from utilidades import (
     Cor,
     imprimir_cabecalho,
-    imprimir_linha,
+    executar_submenu,
     criar_menu,
     verificar_lista,
     verificar_numero,
     verificar_vazio,
     pausar,
     mostrar_erro,
-    escolher_operador
 )
 
 
@@ -50,37 +49,64 @@ def inicializar_arquivo(nome_arquivo: str) -> None:
 
 
 def filiais(sistema):
-    escolha_menu = {
+    escolhas_menu = {
         1: sistema.cadastrar_filial,
         2: sistema.listar_filiais,
-        3: sistema.adicionar_livros_filial,
-        4: sistema.verificar_estoque_por_livro,
-        5: sistema.verificar_estoque_por_filial
+        3: sistema.adicionar_livros_filial
     }
 
-    while True:
-        imprimir_cabecalho("FILIAIS", cor=Cor.AZUL)
+    lista_opcoes = [
+        "CADASTRO DE FILIAIS",
+        "LISTAR FILIAIS",
+        "ADICIONAR LIVRO A FILIAIS"
+    ]
 
-        criar_menu(
-            [
-                "CADASTRO DE FILIAIS",
-                "LISTAR FILIAIS",
-                "ADICIONAR LIVRO A FILIAIS",
-                "VERIFICAR ESTOQUE POR LIVRO",
-                "VERIFICAR ESTOQUE POR FILIAL"
-            ],
-            bloqueado=False,
-            tipo="submenu"
-        )
+    executar_submenu("FILIAIS", lista_opcoes, escolhas_menu)
 
-        opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
 
-        if opcao == 0:
-            return None
+def livros(sistema):
+    escolhas_menu = {
+        1: sistema.cadastrar_livros,
+        2: sistema.listar_livros
+    }
+    lista_opcoes = [
+        "CADASTRAR NOVO LIVRO",
+        "LISTAR LIVROS"
+    ]
 
-        opcao_escolhida = escolha_menu.get(opcao)
+    executar_submenu("LIVROS", lista_opcoes, escolhas_menu)
 
-        opcao_escolhida()
+
+def pesquisas(sistema):
+    escolhas_menu = {
+        1: sistema.buscar_livros_titulo,
+        2: sistema.buscar_livros_categoria,
+        3: sistema.buscar_livros_preco,
+        4: sistema.buscar_quantidade_estoque,
+    }
+    lista_opcoes = [
+        "BUSCAR LIVROS POR TÍTULO",
+        "BUSCAR LIVROS POR CATEGORIA",
+        "BUSCAR LIVROS POR PREÇO",
+        "BUSCA POR QUANTIDADE EM ESTOQUE"
+    ]
+
+    executar_submenu("PESQUISAS", lista_opcoes, escolhas_menu)
+
+
+def relatorios(sistema):
+    escolhas_menu = {
+        1: sistema.relatorio_estoque_por_livro,
+        2: sistema.relatorio_estoque_por_filial,
+        3: sistema.relatorio_completo
+    }
+    lista_opcoes = [
+        "RELATÓRIO DE ESTOQUE POR LIVRO",
+        "RELATÓRIO DE ESTOQUE POR FILIAL",
+        "RELATÓRIO COMPLETO"
+    ]
+
+    executar_submenu("RELATÓRIOS", lista_opcoes, escolhas_menu)
 
 
 def continuar(texto: str) -> bool:
@@ -135,15 +161,11 @@ def main():
     sistema = Livraria(lista_livros, lista_filiais)
     escolhas_menu = {
         1: lambda: filiais(sistema),
-        2: sistema.cadastrar_livros,
-        3: sistema.listar_dados,
-        4: sistema.buscar_livros_titulo,
-        5: sistema.buscar_livros_categoria,
-        6: sistema.buscar_livros_preco,
-        7: sistema.buscar_quantidade_estoque,
-        8: sistema.valor_total_estoque,
-        9: sistema.carregar_estoque,
-        10: sistema.atualizar_estoque,
+        2: lambda: livros(sistema),
+        3: lambda: pesquisas(sistema),
+        4: lambda: relatorios(sistema),
+        5: sistema.carregar_estoque,
+        6: sistema.atualizar_estoque,
     }
     estoque_carregado = False
     houve_alteracao = False
@@ -153,24 +175,17 @@ def main():
     with open("livraria.txt", "r", encoding="utf-8") as arquivo:
         linhas = arquivo.readlines()
 
-    if len(linhas) <= 1:
-        estoque_carregado = True
-    else:
-        estoque_carregado = False
+    estoque_carregado = len(linhas) <= 1
 
     while True:
-        imprimir_cabecalho("SISTEMA DE LIVRARIA .v1", cor=Cor.LARANJA)
+        imprimir_cabecalho("SISTEMA DE LIVRARIA .v3", cor=Cor.LARANJA)
 
         criar_menu(
             [
                 "FILIAIS",
-                "CADASTRAR NOVO LIVRO",
-                "LISTAR LIVROS",
-                "BUSCAR LIVROS POR TÍTULO",
-                "BUSCAR LIVROS POR CATEGORIA",
-                "BUSCAR LIVROS POR PREÇO",
-                "BUSCA POR QUANTIDADE EM ESTOQUE",
-                "VALOR TOTAL EM ESTOQUE",
+                "LIVROS",
+                "PESQUISAS",
+                "RELATÓRIOS",
                 "CARREGAR ESTOQUE",
                 "ATUALIZAR ARQUIVO DE ESTOQUE"
             ],
@@ -179,24 +194,21 @@ def main():
 
         opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
 
-        if not estoque_carregado and opcao != 9 and opcao != 0:
+        if not estoque_carregado and opcao != 5 and opcao != 0:
             mostrar_erro("E11", Cor.AMARELO)
             continue
-        elif opcao == 9:
+        elif opcao == 5:
             estoque_carregado = True
 
         opcao_escolhida = escolhas_menu.get(opcao)
 
         if opcao_escolhida:
-            tamanho_antes = len(sistema.livros) + len(sistema.filiais)
 
             opcao_escolhida()
 
-            tamanho_depois = len(sistema.livros) + len(sistema.filiais)
-
             if sistema.alteracoes_pendentes:
                 houve_alteracao = True
-            elif opcao == 10:
+            elif opcao == 6:
                 houve_alteracao = False
 
         elif opcao == 0:
