@@ -521,7 +521,6 @@ class Livraria:
         else:
             for dados in self.filiais:
                 dados.mostrar_informacoes()
-                imprimir_linha()
 
             pausar()
 

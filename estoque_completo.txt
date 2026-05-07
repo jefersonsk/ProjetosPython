@@ -5,4 +5,5 @@ CÓDIGO,NOME,ENDEREÇO,CONTATO
 3,Introdução ao Python,2019,Novatec,R$50.00,10
 #FL2,2,Otto, 54
 1,O Senhor dos Anéis: A Sociedade do Anel,1999,LPM,R$59.00,18
-#FL3,Andradas,Rua dos Andradas, 91,51 33445588
+#FL3,Andradas,Rua dos Andradas, 91
+#FL4,Santo Antonio,Rua 7,51 99999999
