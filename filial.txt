@@ -3,3 +3,4 @@ CÓDIGO,NOME,ENDEREÇO,CONTATO
 #FL2,2,Otto, 54
 #FL3,Andradas,Rua dos Andradas, 91
 #FL4,Santo Antonio,Rua 7,51 99999999
+#FL5,Canoas,Rua Andradas, 57,51 99887766
