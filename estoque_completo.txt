@@ -8,5 +8,7 @@ CÓDIGO,NOME,ENDEREÇO,CONTATO
 #FL3,Andradas,Rua dos Andradas, 91
 3,Introdução ao Python,2019,Novatec,R$55.90,15
 #FL4,Santo Antonio,Rua 7,51 99999999
-#FL5,Canoas,Rua Andradas, 57,51 99887766
+#FL5,Canoas,Rua Andradas, 57
 3,Introdução ao Python,2019,Novatec,R$55.90,0
+#FL6,Azenha,Av. da Azenha,51 99999999
+4,O Concorrente,2014,Nova Geração,R$70.00,5

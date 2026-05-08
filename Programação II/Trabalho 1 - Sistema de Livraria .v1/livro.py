@@ -10,12 +10,14 @@ from utilidades import (
     verificar_numero,
     escolher_operador,
     condicao_atendida,
-    continuar
+    continuar,
+    enter_para_sair
 )
 
 
 class Livro:
     def __init__(self, titulo, codigo, editora, area, ano):
+        """Gerencia o cadastro de livros do sistema"""
 
         self.titulo = titulo
         self.codigo = codigo
@@ -24,6 +26,8 @@ class Livro:
         self.ano = ano
 
     def mostrar_informacoes(self):
+        """Exibe as informações dos livros."""
+
         print(f"{Cor.VERDE_CLARO}{'>' * 6} Cod#{self.codigo:04}{Cor.RESET}")
         print(
             f"{Cor.AZUL}Título / Editora: "
@@ -35,6 +39,8 @@ class Livro:
         imprimir_linha("-")
 
     def formatar_para_csv(self):
+        """Prepara os dados para gravação em arquivo."""
+
         return f"{self.codigo},{self.titulo},{self.editora},{self.area},{self.ano}"
 
 
@@ -177,7 +183,11 @@ class Livraria:
             codigo = self.livros[-1].codigo + 1
 
         print(f"{Cor.MAGENTA}CÓDIGO{Cor.RESET}: Cod#{codigo:04}")
-        titulo = verificar_vazio("TÍTULO: ", cor=Cor.MAGENTA)
+
+        titulo = enter_para_sair("TÍTULO", cor=Cor.MAGENTA)
+        if titulo is None:
+            return
+
         editora = input(f"{Cor.MAGENTA}EDITORA: {Cor.RESET}")
         area = input(f"{Cor.MAGENTA}ÁREA: {Cor.RESET}")
         ano = validar_ano("ANO: ", cor=Cor.MAGENTA)
@@ -459,7 +469,11 @@ class Livraria:
             codigo = self.filiais[-1].codigo + 1
 
         print(f"{Cor.MAGENTA}CÓDIGO{Cor.RESET}: FL{codigo:02}")
-        nome_filial = verificar_vazio("NOME FILIAL: ", cor=Cor.MAGENTA)
+
+        nome_filial = enter_para_sair("NOME FILIAL", Cor.MAGENTA)
+        if nome_filial is None:
+            return
+
         endereco = verificar_vazio("ENDEREÇO: ", cor=Cor.MAGENTA)
         contato = verificar_vazio("CONTATO: ", cor=Cor.MAGENTA)
 
@@ -508,6 +522,8 @@ class Livraria:
                 else:
                     break
 
+                imprimir_linha()
+
                 escolha = continuar(
                     f"{Cor.AMARELO}Deseja cadastrar outro livro? (S/N) "
                     f"{Cor.RESET}"
@@ -551,7 +567,7 @@ class Livraria:
 
             for item in filial_encontrada.livros:
                 if item.livro.codigo == livro_encontrado.codigo:
-                    print("CADASTRO DUPLICADO")
+                    imprimir_cabecalho("CADASTRO DUPLICADO", cor=Cor.AMARELO)
 
                     pausar()
 
@@ -589,10 +605,14 @@ class Livraria:
         Args:
             lista_livros (list): Lista onde estão os dados cadastrados.
             texto (str): Texto da pergunta que será mostrada para o usuário.
-            nome_atributo (str): Qual atributo de classe será utilizado na busca dos dados.
-            erro (str): Código de aviso, onde a mensagem será capturada no dicionário MENSAGEM_ERRO.
-            operador (str, optional): Operador que deve ser utilizado para realizar a busca, ">=", "<=" ou "==". Default é "==".
-            tipo_dado (type, optional): Tipo de dado que será informado para busca: "int", "float" ou "str". Default é "str".
+            nome_atributo (str): Qual atributo de classe será utilizado na 
+                busca dos dados.
+            erro (str): Código de aviso, onde a mensagem será capturada no 
+                dicionário MENSAGEM_ERRO.
+            operador (str, optional): Operador que deve ser utilizado para 
+                realizar a busca, ">=", "<=" ou "==". Default é "==".
+            tipo_dado (type, optional): Tipo de dado que será informado para
+                 busca: "int", "float" ou "str". Default é "str".
         """
         encontrou = False
         objeto_encontrado = None
@@ -713,8 +733,8 @@ class Livraria:
             pausar()
 
     def relatorio_estoque_por_filial(self):
-        filial_cadastrada = False
-        valor_total_estoque = 0
+        # filial_cadastrada = False
+        # valor_total_estoque = 0
 
         if verificar_lista(self.livros) or verificar_lista(self.filiais):
             mostrar_erro("E06", Cor.AMARELO)

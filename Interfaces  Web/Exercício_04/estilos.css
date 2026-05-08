@@ -1,0 +1,42 @@
+body {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 60px;
+    background-color: #2275d4;
+}
+
+
+#caixa {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    overflow: hidden;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 15px 15px 30px rgba(0, 0, 0, 0.5);
+    width: 850px;
+    height: 400px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+label {
+    font-family: 'Franklin Gothic Medium';
+    font-size: 14px;
+}
+
+input, select {
+    height: 30px;
+    border: none;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    margin-top: 8px;
+}
+
+#area_botoes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 35px;
+}

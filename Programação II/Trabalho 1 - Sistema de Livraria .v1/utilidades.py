@@ -220,7 +220,6 @@ def verificar_numero(
             mostrar_erro("E01", Cor.VERMELHO)
 
 
-
 def continuar(texto: str) -> bool:
 
     while True:
@@ -251,6 +250,13 @@ def validar_ano(texto: str, cor: str = Cor.BRANCO) -> int:
         else:
             mostrar_erro("E08", Cor.VERMELHO)
 
+
+def enter_para_sair(texto: str, cor: str) -> bool:
+    escolha = input(f"{cor}{texto} [Enter para SAIR]: {Cor.RESET}")
+    if not escolha:
+        return None
+    else:
+        return escolha
 
 # ======================================
 # FERRAMENTAS
