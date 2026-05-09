@@ -1,3 +1,4 @@
+import re
 from utilidades import (
     Cor,
     imprimir_linha,
@@ -11,7 +12,8 @@ from utilidades import (
     escolher_operador,
     condicao_atendida,
     continuar,
-    enter_para_sair
+    enter_para_sair,
+    validar_contato
 )
 
 
@@ -85,7 +87,7 @@ class Filial:
         self.codigo = codigo
         self.nome = nome
         self.endereco = endereco
-        self.contato = contato
+        self._contato = None
         self.livros = []
 
     def formatar_para_csv(self):
@@ -159,6 +161,14 @@ class Filial:
             print(
                 f"{Cor.AZUL}Valor Total de Estoque: "
                 f"{Cor.AMARELO}R$ {valor_total_estoque:.2f}{Cor.RESET}")
+
+    @property
+    def contato(self):
+        return self._contato
+
+    @contato.setter
+    def contato(self, contato_digitado):
+        self._contato = formatar_contato(contato_digitado)
 
 
 class Livraria:
@@ -475,7 +485,7 @@ class Livraria:
             return
 
         endereco = verificar_vazio("ENDEREÇO: ", cor=Cor.MAGENTA)
-        contato = verificar_vazio("CONTATO: ", cor=Cor.MAGENTA)
+        contato = validar_contato("CONTATO", cor=Cor.MAGENTA)
 
         self.filiais.append(
             Filial(
