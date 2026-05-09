@@ -1,5 +1,6 @@
 import unicodedata
 from datetime import date
+import re
 
 
 class Cor:
@@ -257,6 +258,33 @@ def enter_para_sair(texto: str, cor: str) -> bool:
         return None
     else:
         return escolha
+
+
+def formatar_contato(texto: str) -> str:
+    padrao = r"\(?(\d{2})\)? ?(\d{4,5})[- ]?(\d{4})"
+
+    contato_validado = re.fullmatch(padrao, texto)
+
+    if contato_validado is not None:
+        ddd = contato_validado.group(1)
+        prefixo = contato_validado.group(2)
+        sufixo = contato_validado.group(3)
+
+        return f"({ddd}) {prefixo}-{sufixo}"
+    else:
+        raise ValueError("Telefone com formato inválido")
+
+
+def validar_contato(texto: str, cor: str) -> str:
+
+    while True:
+        contato_digitado = input(f"{cor}{texto}: {Cor.RESET}")
+        try:
+            contato_limpo = formatar_contato(contato_digitado)
+            return contato_limpo
+        except ValueError:
+            print("TELEFONE INVÁLIDO")
+
 
 # ======================================
 # FERRAMENTAS
