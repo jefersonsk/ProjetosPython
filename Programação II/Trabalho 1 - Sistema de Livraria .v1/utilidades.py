@@ -282,6 +282,7 @@ def validar_contato(texto: str, cor: str) -> str:
         try:
             contato_limpo = formatar_contato(contato_digitado)
             return contato_limpo
+        
         except ValueError:
             print("TELEFONE INVÁLIDO")
 

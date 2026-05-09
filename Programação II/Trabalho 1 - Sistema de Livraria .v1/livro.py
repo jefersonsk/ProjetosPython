@@ -88,7 +88,7 @@ class Filial:
         self.codigo = codigo
         self.nome = nome
         self.endereco = endereco
-        self._contato = None
+        self._contato = contato
         self.livros = []
 
     def formatar_para_csv(self):

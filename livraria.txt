@@ -1,5 +1,1 @@
-CóDIGO,TÍTULO,EDITORA,ÁREA/GÊNERO,ANO,VALOR,ESTOQUE
-1,O Senhor dos Anéis: A Sociedade do Anel,LPM,Fantasia,1999
-2,Rambo,Pipoca e Nanquim,Romance,2024
-3,Introdução ao Python,Novatec,Informática,2019
-4,O Concorrente,Nova Geração,Aventura,2014
+CóDIGO,TíTULO,EDITORA,ÁREA/GÊNERO,ANO
