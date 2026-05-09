@@ -13,7 +13,8 @@ from utilidades import (
     condicao_atendida,
     continuar,
     enter_para_sair,
-    validar_contato
+    validar_contato,
+    formatar_contato
 )
 
 
