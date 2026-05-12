@@ -39,7 +39,7 @@ def inicializar_arquivo(nome_arquivo: str) -> None:
 
     if not arquivo_existe or os.path.getsize(nome_arquivo) == 0:
         with open(nome_arquivo, "a", encoding="utf-8") as arquivo:
-            linha = ",".join(cabecalho)
+            linha = ";".join(cabecalho)
             arquivo.write(linha + "\n")
 
 
@@ -155,15 +155,20 @@ def main():
         5: sistema.carregar_estoque,
         6: sistema.atualizar_estoque,
     }
-    estoque_carregado = False
+    precisa_carregar_arquivos = False
     houve_alteracao = False
 
     inicializar_arquivo("livraria.txt")
 
     with open("livraria.txt", "r", encoding="utf-8") as arquivo:
-        linhas = arquivo.readlines()
+        linhas_livros = arquivo.readlines()
 
-    estoque_carregado = len(linhas) <= 1
+    with open("filial.txt", "r", encoding="utf-8") as arquivo:
+        linhas_filiais = arquivo.readlines()
+
+    precisa_carregar_arquivos = (
+        len(linhas_livros) > 1 or len(linhas_filiais) > 1
+    )
 
     while True:
         imprimir_cabecalho("SISTEMA DE LIVRARIA .v3", cor=Cor.LARANJA)
@@ -177,16 +182,16 @@ def main():
                 "CARREGAR ESTOQUE",
                 "ATUALIZAR ARQUIVO DE ESTOQUE"
             ],
-            not estoque_carregado
+            precisa_carregar_arquivos
         )
 
         opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
 
-        if not estoque_carregado and opcao != 5 and opcao != 0:
+        if precisa_carregar_arquivos and opcao != 5 and opcao != 0:
             mostrar_erro("E11", Cor.AMARELO)
             continue
         elif opcao == 5:
-            estoque_carregado = True
+            precisa_carregar_arquivos = False
 
         opcao_escolhida = escolhas_menu.get(opcao)
 

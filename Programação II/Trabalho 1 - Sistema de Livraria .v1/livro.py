@@ -44,7 +44,7 @@ class Livro:
     def formatar_para_csv(self):
         """Prepara os dados para gravação em arquivo."""
 
-        return f"{self.codigo},{self.titulo},{self.editora},{self.area},{self.ano}"
+        return f"{self.codigo};{self.titulo};{self.editora};{self.area};{self.ano}"
 
 
 class ItemEstoque:
@@ -58,11 +58,11 @@ class ItemEstoque:
 
     def formatar_para_csv(self):
         return (
-            f"{self.livro.codigo},"
-            f"{self.livro.titulo},"
-            f"{self.livro.ano},"
-            f"{self.livro.editora},"
-            f"R${self.valor:.2f},"
+            f"{self.livro.codigo};"
+            f"{self.livro.titulo};"
+            f"{self.livro.ano};"
+            f"{self.livro.editora};"
+            f"R${self.valor:.2f};"
             f"{self.quantidade_estoque}"
         )
 
@@ -92,7 +92,7 @@ class Filial:
         self.livros = []
 
     def formatar_para_csv(self):
-        return f"#FL{self.codigo},{self.nome},{self.endereco},{self.contato}"
+        return f"#FL{self.codigo};{self.nome};{self.endereco};{self.contato}"
 
     def adicionar_ao_estoque(self, livro, valor, quantidade_estoque):
         novo_item = ItemEstoque(livro, valor, quantidade_estoque)
@@ -281,7 +281,7 @@ class Livraria:
                     if not linha_limpa:
                         continue
 
-                    cache = dados.strip().split(",")
+                    cache = dados.strip().split(";")
 
                     if tipo == "livro":
                         dados_livro = Livro(
