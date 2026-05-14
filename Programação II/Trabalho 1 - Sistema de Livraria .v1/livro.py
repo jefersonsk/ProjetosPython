@@ -251,13 +251,15 @@ class Livraria:
                 else:
                     break
 
+                imprimir_linha()
+
                 escolha = continuar(
                     f"{Cor.AMARELO}"
                     f"Deseja cadastrar o livro em outra filial? (S/N) "
                     f"{Cor.RESET}"
                 )
 
-        pausar()
+        # pausar()
 
     def carregar_dados(self, nome_arquivo: str, tipo: str) -> list:
         """
@@ -627,7 +629,7 @@ class Livraria:
         """
         encontrou = False
         objeto_encontrado = None
-        prompt_completo = f"{pergunta} [ou 0 para SAIR]: {sufixo} "
+        prompt_completo = f"{pergunta} [ou ENTER para SAIR]: {sufixo} "
 
         if verificar_lista(lista):
             mostrar_erro("E03", Cor.AMARELO)
@@ -642,9 +644,9 @@ class Livraria:
                     f"{Cor.AMARELO}{prompt_completo}{Cor.RESET}")
             else:
                 pesquisa = verificar_numero(
-                    prompt_completo, tipo_dado, cor=Cor.AMARELO)
+                    prompt_completo, tipo_dado, cor=Cor.AMARELO, permitir_vazio=True)
 
-            if pesquisa in (0, "0"):
+            if pesquisa in (None, ""):
                 return None
 
             imprimir_cabecalho("RESULTADO DA PESQUISA", cor=Cor.MAGENTA_CLARO)

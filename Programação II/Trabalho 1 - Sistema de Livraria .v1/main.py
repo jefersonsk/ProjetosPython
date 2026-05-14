@@ -185,7 +185,9 @@ def main():
             precisa_carregar_arquivos
         )
 
-        opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
+        opcao = verificar_numero(
+            "Digite a opção desejada: ", int, Cor.AMARELO, permitir_zero=True
+        )
 
         if precisa_carregar_arquivos and opcao != 5 and opcao != 0:
             mostrar_erro("E11", Cor.AMARELO)

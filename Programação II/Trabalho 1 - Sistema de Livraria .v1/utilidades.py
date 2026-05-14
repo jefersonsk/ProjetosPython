@@ -32,7 +32,8 @@ class Erro:
         "E09": "Campo não pode ser em branco.",
         "E10": "Dados já foram carregados para o sistema.",
         "E11": "Dados do arquivo não carregados.\nCarregar dados antes de utilizar o aplicativo",
-        "E12": "Filial não localizada."
+        "E12": "Filial não localizada.",
+        "E13": "Telefone digitado de forma inválida. \nFormato correto (XX) XXXX-XXXX ou (XX) XXXXX-XXXX"
     }
 
 
@@ -77,7 +78,9 @@ def executar_submenu(titulo_menu, lista_opcoes, escolhas_menu):
             tipo="submenu"
         )
 
-        opcao = verificar_numero("Digite a opção desejada: ", int, Cor.AMARELO)
+        opcao = verificar_numero(
+            "Digite a opção desejada: ", int, Cor.AMARELO, permitir_zero=True
+        )
 
         if opcao == 0:
             return None
@@ -183,7 +186,7 @@ def escolher_operador(texto: str) -> str:
         )
 
         escolha = verificar_numero(
-            "Escolha a opção desejada: ", int, cor=Cor.AMARELO)
+            "Escolha a opção desejada: ", int, cor=Cor.AMARELO, permitir_zero=True)
         imprimir_linha()
 
         if escolha == 1:
@@ -197,7 +200,11 @@ def escolher_operador(texto: str) -> str:
 
 
 def verificar_numero(
-    texto: str, tipo_conversao: type, cor: str = Cor.BRANCO
+    texto: str,
+    tipo_conversao: type,
+    cor: str = Cor.BRANCO,
+    permitir_vazio: bool = False,
+    permitir_zero: bool = False,
 ) -> int | float:
     """
     Verifica se o que está sendo digitado é número inteiro(int) ou decimal(float), conforme tipo_conversao informada.
@@ -211,12 +218,19 @@ def verificar_numero(
     """
     while True:
         try:
-            valor_digitado = tipo_conversao(input(f"{cor}{texto}{Cor.RESET}"))
+            valor_digitado = input(f"{cor}{texto}{Cor.RESET}")
 
-            if valor_digitado < 0:
-                mostrar_erro("E01", Cor.VERMELHO)
+            if valor_digitado == "" and permitir_vazio:
+                return None
             else:
-                return valor_digitado
+                valor_verificado = tipo_conversao(valor_digitado)
+
+            if ((permitir_zero and valor_verificado >= 0)
+                    or (not permitir_zero and valor_verificado > 0)):
+                return valor_verificado
+            else:
+                mostrar_erro("E01", Cor.VERMELHO)
+
         except ValueError:
             mostrar_erro("E01", Cor.VERMELHO)
 
@@ -282,9 +296,9 @@ def validar_contato(texto: str, cor: str) -> str:
         try:
             contato_limpo = formatar_contato(contato_digitado)
             return contato_limpo
-        
+
         except ValueError:
-            print("TELEFONE INVÁLIDO")
+            mostrar_erro("E13", Cor.AMARELO)
 
 
 # ======================================

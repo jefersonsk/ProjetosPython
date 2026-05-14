@@ -1,1 +1,3 @@
 CóDIGO,TÍTULO,EDITORA,ÁREA/GÊNERO,ANO,VALOR,ESTOQUE
+1;O Senhor dos Anéis: A Sociedade do Anel;LPM;Fantasia;1999
+2;O Progamador Pragmatico;Bookmaker;Programação;2026
