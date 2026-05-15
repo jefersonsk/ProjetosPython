@@ -33,7 +33,8 @@ class Erro:
         "E10": "Dados já foram carregados para o sistema.",
         "E11": "Dados do arquivo não carregados.\nCarregar dados antes de utilizar o aplicativo",
         "E12": "Filial não localizada.",
-        "E13": "Telefone digitado de forma inválida. \nFormato correto (XX) XXXX-XXXX ou (XX) XXXXX-XXXX"
+        "E13": "Telefone digitado de forma inválida. \nFormato correto (XX) XXXX-XXXX ou (XX) XXXXX-XXXX",
+        "E14": "Livro já cadastrado na filial."
     }
 
 

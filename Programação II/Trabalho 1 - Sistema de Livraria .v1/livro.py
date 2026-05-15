@@ -200,7 +200,7 @@ class Livraria:
             return
 
         editora = input(f"{Cor.MAGENTA}EDITORA: {Cor.RESET}")
-        area = input(f"{Cor.MAGENTA}ÁREA: {Cor.RESET}")
+        area = input(f"{Cor.MAGENTA}ÁREA\GÊNERO: {Cor.RESET}")
         ano = validar_ano("ANO: ", cor=Cor.MAGENTA)
 
         self.livros.append(
@@ -580,11 +580,11 @@ class Livraria:
 
             for item in filial_encontrada.livros:
                 if item.livro.codigo == livro_encontrado.codigo:
-                    imprimir_cabecalho("CADASTRO DUPLICADO", cor=Cor.AMARELO)
+                    mostrar_erro("E14", cor=Cor.AMARELO)
 
                     pausar()
 
-                    return
+                    # return
 
             if livro_encontrado is None:
                 return
