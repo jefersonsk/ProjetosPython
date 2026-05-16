@@ -106,7 +106,13 @@ def criar_menu(lista: list) -> str:
     print("0 - SAIR")
 
 
+def cadastrar_cidades(objeto: object):
+    cidade = input("Digite a cidade: ")
+    print(f"Cidade {cidade} cadastrada com sucesso!")
+
+
 def main():
+    meu_grafo = Grafo()
     opcoes_menu = [
         "CADASTRAR CIDADE",
         "CADASTRAR CONEXÃO",
@@ -115,17 +121,29 @@ def main():
         "LISTAR CIDADES VIZINHAS",
         "CARREGAR ARQUIVO CSV"
     ]
-    escolha_opcao = {
-        1:
+    escolha_menu = {
+        1: cadastrar_cidades,
+        # 2: cadastrar_conexoes,
+        # 3: listar_cidades,
+        # 4: listar_conexoes,
+        # 5: listar_cidades_vizinhas,
+        # 6: carregar_arquivo_csv
     }
 
     while True:
         criar_menu(opcoes_menu)
 
-        escolha_menu = int(input("Digite a opção desejada: "))
+        opcao_digitada = int(input("Digite a opção desejada: "))
 
-        if escolha_menu == 0:
+        opcao_escolhida = escolha_menu.get(opcao_digitada)
+
+        if opcao_escolhida:
+            opcao_escolhida(meu_grafo)
+        elif opcao_digitada == 0:
+            print("Sistema sendo encerrado...")
             break
+        else:
+            print("Opção inválida!")
 
 
 if __name__ == "__main__":
