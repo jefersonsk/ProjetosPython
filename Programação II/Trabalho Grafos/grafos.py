@@ -18,6 +18,10 @@ class Grafo:
         self.conexoes = []
 
     def cadastra_cidade(self, nome):
+        for item in self.cidades:
+            if item.nome_cidade == nome:
+                return
+
         # Instância um objeto do tipo Vertice
         nova_cidade = Vertice(nome)
 
@@ -70,15 +74,59 @@ class Grafo:
             if item.nome_cidade == nome_cidades:
                 cidade_alvo = item
 
-        for item in cidade_alvo.conexoes:
-            if item.cidade1 == cidade_alvo:
-                lista_vizinhos.append(
-                    [item.distancia, item.cidade2.nome_cidade])
-            else:
-                lista_vizinhos.append(
-                    [item.distancia, item.cidade1.nome_cidade])
+        if cidade_alvo is not None:
+            for item in cidade_alvo.conexoes:
+                if item.cidade1 == cidade_alvo:
+                    lista_vizinhos.append(
+                        [item.distancia, item.cidade2.nome_cidade])
+                else:
+                    lista_vizinhos.append(
+                        [item.distancia, item.cidade1.nome_cidade])
 
-        lista_vizinhos.sort()
+            lista_vizinhos.sort()
 
-        for item in lista_vizinhos:
-            print(f"{item[1]}: {item[0]:.2f} Km")
+            for item in lista_vizinhos:
+                print(f"{item[1]}: {item[0]:.2f} Km")
+        else:
+            print("Cidade não encontrado no sistema.")
+
+    def carregar_arquivo(self, nome_arquivo):
+        with open(nome_arquivo, "r", encoding="utf-8") as arquivo:
+            for dados in arquivo:
+                cache = dados.strip.split(",")
+
+                self.cadastra_cidade(cache[0])
+                self.cadastra_cidade(cache[1])
+                self.cadastra_conexao(cache[0], cache[1], int(cache[2]))
+
+
+def criar_menu(lista: list) -> str:
+    for i, item in enumerate(lista, start=1):
+        print(f"{i} - {item}")
+    print("0 - SAIR")
+
+
+def main():
+    opcoes_menu = [
+        "CADASTRAR CIDADE",
+        "CADASTRAR CONEXÃO",
+        "LISTAR CIDADES",
+        "LISTAR CONEXÕES",
+        "LISTAR CIDADES VIZINHAS",
+        "CARREGAR ARQUIVO CSV"
+    ]
+    escolha_opcao = {
+        1:
+    }
+
+    while True:
+        criar_menu(opcoes_menu)
+
+        escolha_menu = int(input("Digite a opção desejada: "))
+
+        if escolha_menu == 0:
+            break
+
+
+if __name__ == "__main__":
+    main()
