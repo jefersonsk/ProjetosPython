@@ -7,8 +7,6 @@ from utilidades import (
     criar_menu,
     verificar_lista,
     verificar_numero,
-    verificar_vazio,
-    pausar,
     mostrar_erro,
 )
 
