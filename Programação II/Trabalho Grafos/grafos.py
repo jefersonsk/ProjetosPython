@@ -1,3 +1,14 @@
+from utilidades import (
+    Cor,
+    verificar_numero,
+    imprimir_cabecalho,
+    criar_menu,
+    continuar,
+    enter_para_sair,
+    imprimir_linha,
+    mostrar_erro
+)
+
 class Aresta:
     def __init__(self, cidade1, cidade2, distancia):
         self.cidade1 = cidade1
@@ -19,14 +30,12 @@ class Grafo:
 
     def cadastra_cidade(self, nome):
         for item in self.cidades:
-            if item.nome_cidade == nome:
-                return
+            if item.nome_cidade.strip().lower() == nome.strip().lower():
+                return False
 
-        # Instância um objeto do tipo Vertice
         nova_cidade = Vertice(nome)
-
-        # Adiciona esse objeto na lista de cidades do Grafo
         self.cidades.append(nova_cidade)
+        return True
 
     def cadastra_conexao(self, nome_cidade1, nome_cidade2, distancia):
         vertice1 = None
@@ -37,6 +46,8 @@ class Grafo:
                 vertice1 = item
             elif item.nome_cidade == nome_cidade2:
                 vertice2 = item
+            else:
+                return False
 
         nova_aresta = Aresta(vertice1, vertice2, distancia)
 
@@ -46,6 +57,7 @@ class Grafo:
         vertice2.vizinhanca.append(vertice1)
         vertice1.conexoes.append(nova_aresta)
         vertice2.conexoes.append(nova_aresta)
+        return True
 
     def listar_cidades(self):
         nomes_cidades = []
@@ -100,16 +112,40 @@ class Grafo:
                 self.cadastra_conexao(cache[0], cache[1], int(cache[2]))
 
 
-def criar_menu(lista: list) -> str:
-    for i, item in enumerate(lista, start=1):
-        print(f"{i} - {item}")
-    print("0 - SAIR")
+def cadastrar_cidades(objeto: Grafo):
+    while True:
+        imprimir_cabecalho("CADASTRAR CIDADE", cor=Cor.LARANJA)
+
+        cidade = enter_para_sair("Digite o nome da cidade", Cor.MAGENTA)
+
+        if not cidade:
+            return
+        
+        validacao_dos_dados = objeto.cadastra_cidade(cidade)
+        if not validacao_dos_dados:
+            mostrar_erro("E02", Cor.AMARELO)
+            continue
+        
+        print(
+            f"\n{Cor.CIANO}Cidade {Cor.AMARELO}{cidade}{Cor.CIANO}" 
+            f"cadastrada com sucesso!{Cor.RESET}"
+        )
 
 
-def cadastrar_cidades(objeto: object):
-    cidade = input("Digite a cidade: ")
-    print(f"Cidade {cidade} cadastrada com sucesso!")
+def cadastrar_conexoes(objeto: Grafo):
+    cidade_01 = input("Digite o nome da primeira cidade: ")
+    cidade_02 = input("Digite o nome da segunda cidade: ")
+    distancia = verificar_numero("Digite a distância entre as cidades: ", float)
 
+    validacao_dos_dados = objeto.cadastra_conexao(cidade_01, cidade_02, distancia)
+
+    if validacao_dos_dados:
+        imprimir_cabecalho("Dados cadastrados com sucesso.", cor=Cor.AMARELO)
+    else:
+        print("Erro")
+
+def lista_cidades(objeto: Grafo):
+    objeto.listar_cidades()
 
 def main():
     meu_grafo = Grafo()
@@ -123,27 +159,29 @@ def main():
     ]
     escolha_menu = {
         1: cadastrar_cidades,
-        # 2: cadastrar_conexoes,
-        # 3: listar_cidades,
+        2: cadastrar_conexoes,
+        3: lista_cidades,
         # 4: listar_conexoes,
         # 5: listar_cidades_vizinhas,
         # 6: carregar_arquivo_csv
     }
 
     while True:
+        imprimir_cabecalho("SISTEMA DE GRAFOS v1", cor=Cor.LARANJA)
+
         criar_menu(opcoes_menu)
 
-        opcao_digitada = int(input("Digite a opção desejada: "))
+        opcao_digitada = verificar_numero("Digite a opção desejada: ", int, permitir_zero=True)
 
         opcao_escolhida = escolha_menu.get(opcao_digitada)
 
         if opcao_escolhida:
             opcao_escolhida(meu_grafo)
         elif opcao_digitada == 0:
-            print("Sistema sendo encerrado...")
+            imprimir_cabecalho("SISTEMA SENDO ENCERRADO...", cor=Cor.VERDE)
             break
         else:
-            print("Opção inválida!")
+            mostrar_erro("E01", Cor.VERMELHO)
 
 
 if __name__ == "__main__":
