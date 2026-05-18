@@ -23,8 +23,11 @@ class Erro:
     MENSAGENS = {
         "E01": "Valor inválido.",
         "E02": "Cidade já cadastrada.",
+<<<<<<< HEAD
         "E03": "Cidade não cadastrada.",
         "E04": "Número de cidades cadastradas insuficientes."
+=======
+>>>>>>> 49c34c622051b7f3f3f43e85536bd5d555583428
     }
 
 

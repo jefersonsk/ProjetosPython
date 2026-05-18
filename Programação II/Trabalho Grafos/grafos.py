@@ -6,11 +6,17 @@ from utilidades import (
     continuar,
     enter_para_sair,
     imprimir_linha,
+<<<<<<< HEAD
     mostrar_erro,
     pausar
 )
 
 
+=======
+    mostrar_erro
+)
+
+>>>>>>> 49c34c622051b7f3f3f43e85536bd5d555583428
 class Aresta:
     def __init__(self, cidade1, cidade2, distancia):
         self.cidade1 = cidade1
@@ -114,6 +120,7 @@ class Grafo:
                 self.cadastra_conexao(cache[0], cache[1], int(cache[2]))
 
 
+<<<<<<< HEAD
 # ================================
 #   FERRAMENTAS DO SISTEMA
 # ================================
@@ -211,7 +218,42 @@ def lista_cidades(objeto: Grafo):
     objeto.listar_cidades()
 
     pausar()
+=======
+def cadastrar_cidades(objeto: Grafo):
+    while True:
+        imprimir_cabecalho("CADASTRAR CIDADE", cor=Cor.LARANJA)
 
+        cidade = enter_para_sair("Digite o nome da cidade", Cor.MAGENTA)
+
+        if not cidade:
+            return
+        
+        validacao_dos_dados = objeto.cadastra_cidade(cidade)
+        if not validacao_dos_dados:
+            mostrar_erro("E02", Cor.AMARELO)
+            continue
+        
+        print(
+            f"\n{Cor.CIANO}Cidade {Cor.AMARELO}{cidade}{Cor.CIANO}" 
+            f"cadastrada com sucesso!{Cor.RESET}"
+        )
+
+
+def cadastrar_conexoes(objeto: Grafo):
+    cidade_01 = input("Digite o nome da primeira cidade: ")
+    cidade_02 = input("Digite o nome da segunda cidade: ")
+    distancia = verificar_numero("Digite a distância entre as cidades: ", float)
+>>>>>>> 49c34c622051b7f3f3f43e85536bd5d555583428
+
+    validacao_dos_dados = objeto.cadastra_conexao(cidade_01, cidade_02, distancia)
+
+    if validacao_dos_dados:
+        imprimir_cabecalho("Dados cadastrados com sucesso.", cor=Cor.AMARELO)
+    else:
+        print("Erro")
+
+def lista_cidades(objeto: Grafo):
+    objeto.listar_cidades()
 
 def main():
     meu_grafo = Grafo()
@@ -237,8 +279,12 @@ def main():
 
         criar_menu(opcoes_menu)
 
+<<<<<<< HEAD
         opcao_digitada = verificar_numero(
             "Digite a opção desejada: ", int, permitir_zero=True)
+=======
+        opcao_digitada = verificar_numero("Digite a opção desejada: ", int, permitir_zero=True)
+>>>>>>> 49c34c622051b7f3f3f43e85536bd5d555583428
 
         opcao_escolhida = escolha_menu.get(opcao_digitada)
 
