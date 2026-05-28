@@ -24,7 +24,8 @@ class Erro:
         "E01": "Valor inválido.",
         "E02": "Cidade já cadastrada.",
         "E03": "Cidade não cadastrada.",
-        "E04": "Número de cidades cadastradas insuficientes."
+        "E04": "Número de cidades cadastradas insuficientes.",
+        "E05": "Linha com dados corrompidos e não carregados."
     }
 
 
@@ -333,13 +334,14 @@ def remover_acentos(texto: str) -> str:
     """
     # NFKD serve para quebrar o caracter acentuado em duas partes, a letra e o acento. Ex: "Á" é separado em "A" + "´".
     # O normalize serve para remover a conexão entre o caractere e o acento.
-    texto_normalizado = unicodedata.normalize("NFKD", texto)
+    texto_acentos_desconectados = unicodedata.normalize("NFKD", texto)
     # encode("ASCII"): realiza a conversão do texto decomposto para o padrão ASCII, onde contém em sua tabela as letras sem acentos.
     # Ele aceita a letra base porém não reconhece o símbolo do acento
     # "ignore": informa o que pode ser descartado. Se localizar algum caractere que não está na tabela ASCII, irá ignorar e não irá adicionar ao texto limpo.
     # decode("utf-8"): O comando encode transforma o texto em formato de bytes. Já o decode pega esses bytes já sem acentos e transforma em string.
-    texto_limpo = texto_normalizado.encode("ASCII", "ignore").decode("utf-8")
-    return texto_limpo
+    texto_limpo = texto_acentos_desconectados.encode("ASCII", "ignore").decode("utf-8")
+    texto_normalizado = texto_limpo.strip().lower()
+    return texto_normalizado
 
 
 def verificar_vazio(texto: str, cor: str = Cor.BRANCO) -> str:
