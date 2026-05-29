@@ -1,6 +1,4 @@
 import unicodedata
-from datetime import date
-import re
 
 
 class Cor:
@@ -58,31 +56,6 @@ def criar_menu(lista: list, bloqueado: bool = False, tipo: str = "principal") ->
         print(f"{Cor.AZUL}0 - {Cor.VERDE}VOLTAR AO MENU PRINCIPAL{Cor.RESET}")
 
     imprimir_linha()
-
-
-def executar_submenu(titulo_menu, lista_opcoes, escolhas_menu):
-    while True:
-        imprimir_cabecalho(titulo_menu.upper(), cor=Cor.AZUL)
-
-        criar_menu(
-            lista_opcoes,
-            bloqueado=False,
-            tipo="submenu"
-        )
-
-        opcao = verificar_numero(
-            "Digite a opção desejada: ", int, Cor.AMARELO, permitir_zero=True
-        )
-
-        if opcao == 0:
-            return None
-
-        opcao_escolhida = escolhas_menu.get(opcao)
-
-        if opcao_escolhida:
-            opcao_escolhida()
-        else:
-            mostrar_erro("E02", Cor.VERMELHO)
 
 
 def imprimir_cabecalho(
@@ -143,54 +116,6 @@ def pausar() -> None:
 # ======================================
 
 
-def verificar_lista(lista: list) -> bool:
-    """
-    Verifica se a lista tem dados armazenados retornando True se a lista está vazia, caso contrário retorna False.
-
-    Args:
-        lista (list): Lista onde os dados são gravados.
-
-    Returns:
-        bool: Retorna Retorna True se a lista está vazia e False se tem algum dado gravado.
-    """
-    return not lista
-
-
-def escolher_operador(texto: str) -> str:
-    """
-    Faz a escolha de qual operador "<=" ou ">=" será escolhido para as buscas.
-
-    Args:
-        texto (str): Texto da pergunta que será mostrada para usuário.
-
-    Returns:
-        str: Retorna "<=" ou ">=".
-    """
-    while True:
-        print(f"{Cor.CIANO}{texto}{Cor.RESET}")
-        imprimir_linha()
-
-        criar_menu(
-            ["ACIMA DO VALOR (MAIOR OU IGUAL)",
-             "ABAIXO DO VALOR (MENOR OU IGUAL)"],
-            bloqueado=False,
-            tipo="submenu",
-        )
-
-        escolha = verificar_numero(
-            "Escolha a opção desejada: ", int, cor=Cor.AMARELO, permitir_zero=True)
-        imprimir_linha()
-
-        if escolha == 1:
-            return ">="
-        elif escolha == 2:
-            return "<="
-        elif escolha == 0:
-            return None
-        else:
-            mostrar_erro("E02", Cor.VERMELHO)
-
-
 def verificar_numero(
     texto: str,
     tipo_conversao: type,
@@ -240,24 +165,6 @@ def continuar() -> bool:
             mostrar_erro("E02", Cor.VERMELHO)
 
 
-def validar_ano(texto: str, cor: str = Cor.BRANCO) -> int:
-    """
-    Valida o ano digitado.
-
-    Returns:
-        int: Retorna o ano digitado como o tipo inteiro.
-    """
-    ano_atual = date.today().year
-
-    while True:
-        ano = verificar_numero(f"{cor}{texto}{Cor.RESET}", int)
-
-        if len(str(ano)) == 4 and str(ano).isdigit() and ano <= ano_atual or ano == 0:
-            return ano
-        else:
-            mostrar_erro("E08", Cor.VERMELHO)
-
-
 def enter_para_sair(texto: str, cor: str) -> bool:
     escolha = input(f"{cor}{texto} [Enter para SAIR]: {Cor.RESET}")
     if not escolha:
@@ -266,63 +173,11 @@ def enter_para_sair(texto: str, cor: str) -> bool:
         return escolha
 
 
-def formatar_contato(texto: str) -> str:
-    padrao = r"\(?(\d{2})\)? ?(\d{4,5})[- ]?(\d{4})"
-
-    contato_validado = re.fullmatch(padrao, texto)
-
-    if contato_validado is not None:
-        ddd = contato_validado.group(1)
-        prefixo = contato_validado.group(2)
-        sufixo = contato_validado.group(3)
-
-        return f"({ddd}) {prefixo}-{sufixo}"
-    else:
-        raise ValueError("Telefone com formato inválido")
-
-
-def validar_contato(texto: str, cor: str) -> str:
-
-    while True:
-        contato_digitado = input(f"{cor}{texto}: {Cor.RESET}")
-        try:
-            contato_limpo = formatar_contato(contato_digitado)
-            return contato_limpo
-
-        except ValueError:
-            mostrar_erro("E13", Cor.AMARELO)
-
-
 # ======================================
 # FERRAMENTAS
 # ======================================
 
-
-def condicao_atendida(dado_livro, pesquisa, operador: str) -> bool:
-    """
-    Verifica se o dado do livro atende à condição do operador.
-
-    Args:
-        dado_livro (_type_): Dado que foi capturado na lista que deve ser comparado com o dado do usuário.
-        pesquisa (_type_): Dado informado pelo usuário que está sendo utilizado como base para pesquisa.
-        operador (str): Qual operador será usado para retornar os dados.
-
-    Returns:
-        bool: Retorna True se localizar o dado informado pelo usuário. Caso contrário, retorna False.
-    """
-    if operador == "==":
-        return (
-            remover_acentos(str(pesquisa)).upper()
-            in remover_acentos(str(dado_livro)).upper()
-        )
-    elif operador == ">=":
-        return dado_livro >= pesquisa
-    elif operador == "<=":
-        return dado_livro <= pesquisa
-    return False
-
-
-def remover_acentos(texto: str) -> str:
+def normalizar_texto(texto: str) -> str:
     """
     Verifica o texto informado e remove acentuação e cedilha, retornando o texto normalizado.
 
@@ -339,7 +194,8 @@ def remover_acentos(texto: str) -> str:
     # Ele aceita a letra base porém não reconhece o símbolo do acento
     # "ignore": informa o que pode ser descartado. Se localizar algum caractere que não está na tabela ASCII, irá ignorar e não irá adicionar ao texto limpo.
     # decode("utf-8"): O comando encode transforma o texto em formato de bytes. Já o decode pega esses bytes já sem acentos e transforma em string.
-    texto_limpo = texto_acentos_desconectados.encode("ASCII", "ignore").decode("utf-8")
+    texto_limpo = texto_acentos_desconectados.encode(
+        "ASCII", "ignore").decode("utf-8")
     texto_normalizado = texto_limpo.strip().lower()
     return texto_normalizado
 
