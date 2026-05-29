@@ -5,7 +5,8 @@ from utilidades import (
     criar_menu,
     enter_para_sair,
     mostrar_erro,
-    remover_acentos,
+    normalizar_texto,
+    imprimir_linha,
     pausar
 )
 
@@ -30,10 +31,10 @@ class Grafo:
         self.conexoes = []
 
     def cadastra_cidade(self, nome):
-        nome_normalizado = remover_acentos(nome)
+        nome_normalizado = normalizar_texto(nome)
 
         for item in self.cidades:
-            cidade_normalizada = remover_acentos(
+            cidade_normalizada = normalizar_texto(
                 item.nome_cidade)
 
             if cidade_normalizada == nome_normalizado:
@@ -47,16 +48,17 @@ class Grafo:
         vertice1 = None
         vertice2 = None
         nome_cidade1_normalizada = (
-            remover_acentos(nome_cidade1).strip().lower()
+            normalizar_texto(nome_cidade1)
         )
         nome_cidade2_normalizada = (
-            remover_acentos(nome_cidade2).strip().lower()
+            normalizar_texto(nome_cidade2)
         )
 
         for item in self.cidades:
             cidade_normalizada = (
-                remover_acentos(item.nome_cidade).strip().lower()
+                normalizar_texto(item.nome_cidade)
             )
+
             if cidade_normalizada == nome_cidade1_normalizada:
                 vertice1 = item
             elif cidade_normalizada == nome_cidade2_normalizada:
@@ -89,9 +91,9 @@ class Grafo:
     def lista_conexoes(self):
         for aresta in self.conexoes:
             print(
-                f"{aresta.cidade1.nome_cidade}, "
+                f"{Cor.AZUL}{aresta.cidade1.nome_cidade}, "
                 f"{aresta.cidade2.nome_cidade}: "
-                f"{aresta.distancia} Km"
+                f"{Cor.AMARELO}{aresta.distancia} Km{Cor.RESET}"
             )
 
     def lista_vizinhas(self, nome_cidades):
@@ -99,7 +101,10 @@ class Grafo:
         lista_vizinhos = []
 
         for item in self.cidades:
-            if item.nome_cidade == nome_cidades:
+            if (
+                normalizar_texto(item.nome_cidade)
+                == normalizar_texto(nome_cidades)
+            ):
                 cidade_alvo = item
                 break
 
@@ -114,14 +119,23 @@ class Grafo:
 
             lista_vizinhos.sort()
 
+            imprimir_cabecalho(
+                f"Lista de Cidades Vizinhas de {cidade_alvo.nome_cidade}",
+                cor=Cor.VERDE
+            )
+
             for item in lista_vizinhos:
-                print(f"{item[1]}: {item[0]:.2f} Km")
+                print(
+                    f"{Cor.AZUL}{item[1]}: {Cor.AMARELO}{item[0]:.2f} Km"
+                    f"{Cor.RESET}"
+                )
         else:
-            print("Cidade não encontrado no sistema.")
+            mostrar_erro("E03", cor=Cor.AMARELO)
 
     @classmethod
     def carregar_arquivo(cls, nome_arquivo):
         novo_grafo = cls()
+        linha = 1
 
         try:
             with open(nome_arquivo, "r", encoding="utf-8") as arquivo:
@@ -129,21 +143,27 @@ class Grafo:
                     cache = dados.strip().split(";")
 
                     if len(cache) < 3:
+                        imprimir_linha()
+
                         print(
-                            f"{Cor.VERMELHO}"
-                            "ERRO: Dados corrompidos. Linha não carregada. "
-                            f"{Cor.RESET}"
+                            f"{Cor.VERMELHO}Dados Corrompidos."
+                            f"Linha {linha} não carregada.{Cor.RESET}"
                         )
+
                         continue
                     try:
                         distancia = float(cache[2])
                     except ValueError:
+                        imprimir_linha()
+
                         print(
-                            f"{Cor.VERMELHO}"
-                            "ERRO: Dados corrompidos. Linha não carregada. "
-                            f"{Cor.RESET}"
+                            f"{Cor.VERMELHO}Dados Corrompidos."
+                            f"Linha {linha} não carregada.{Cor.RESET}"
                         )
+
                         continue
+
+                    linha += 1
 
                     novo_grafo.cadastra_cidade(cache[0])
                     novo_grafo.cadastra_cidade(cache[1])
@@ -167,7 +187,11 @@ class Grafo:
                     arquivo.write(linha + "\n")
 
             for dados in self.conexoes:
-                linha = f"{dados.cidade1.nome_cidade};{dados.cidade2.nome_cidade};{dados.distancia}"
+                linha = (
+                    f"{dados.cidade1.nome_cidade};"
+                    f"{dados.cidade2.nome_cidade};"
+                    f"{dados.distancia}"
+                )
                 arquivo.write(linha + "\n")
 
 
@@ -188,7 +212,10 @@ def obter_cidade_validada(
 
         if tipo_validacao == "se_nao_existe":
             for item in objeto.cidades:
-                if item.nome_cidade == cidade_digitada:
+                if (
+                    normalizar_texto(item.nome_cidade)
+                    == normalizar_texto(cidade_digitada)
+                ):
                     return cidade_digitada
 
             mostrar_erro("E03", Cor.AMARELO)
@@ -198,6 +225,7 @@ def obter_cidade_validada(
 
             if not cidade_cadastrada:
                 mostrar_erro("E02", Cor.AMARELO)
+                continue
 
             return cidade_digitada
 
@@ -250,13 +278,15 @@ def cadastrar_conexoes(objeto: Grafo):
         return
 
     distancia = verificar_numero(
-        "Digite a distância entre as cidades: ", float, Cor.MAGENTA)
+        "Digite a distância entre as cidades (Km): ", float, Cor.MAGENTA)
 
     objeto.cadastra_conexao(cidade_01, cidade_02, distancia)
 
     imprimir_cabecalho(
         "Dados cadastrados com sucesso.", cor=Cor.VERDE
     )
+
+    pausar()
 
 
 def listar_cidades(objeto: Grafo):
@@ -298,12 +328,16 @@ def listar_cidades_vizinhas(objeto: Grafo):
 
     objeto.lista_vizinhas(cidade_escolhida)
 
+    pausar()
 
-def salvar_arquivo(self):
-    with open("grafos.csv", "w", encoding="utf-8") as arquivo:
-        for dados in self.conexoes:
-            linha = f"{dados.cidade1.nome_cidade};{dados.cidade2.nome_cidade};{dados.distancia}"
-            arquivo.write(linha + "\n")
+
+def salvar_arquivo(objeto: Grafo):
+
+    objeto.salva_arquivo()
+
+    imprimir_cabecalho("Dados salvos com sucesso.", cor=Cor.VERDE)
+
+    pausar()
 
 
 def main():
