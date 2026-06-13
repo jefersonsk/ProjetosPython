@@ -278,7 +278,8 @@ def cadastrar_conexoes(objeto: Grafo):
         return
 
     distancia = verificar_numero(
-        "Digite a distância entre as cidades (Km): ", float, Cor.MAGENTA)
+        "Digite a distância entre as cidades (Km): ", float, Cor.MAGENTA
+    )
 
     objeto.cadastra_conexao(cidade_01, cidade_02, distancia)
 

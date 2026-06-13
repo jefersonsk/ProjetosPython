@@ -13,17 +13,30 @@ class ContaBancaria(ABC):
         self._titular = titular
         self._banco = banco
         self._numero_conta = numero_conta
-        self._saldo = saldo
+        self.saldo = saldo
         self._senha = senha
 
-    def saque(self, valor):
-        pass
+    @property
+    def saldo(self):
+        return self._saldo_centavos / 100
 
-    def deposito(self, valor):
-        pass
+    @saldo.setter
+    def saldo(self, valor_em_reais):
+        self._saldo_centavos = int(valor_em_reais * 100)
+
+    def saque(self, valor_em_reais):
+        valor_convertido_centavos = int(valor_em_reais * 100)
+        if self._saldo_centavos < valor_convertido_centavos:
+            print("Saldo Insuficiente.")
+        else:
+            self._saldo_centavos -= valor_convertido_centavos
+
+    def deposito(self, valor_em_reais):
+        valor_convertido_centavos = int(valor_em_reais * 100)
+        self._saldo_centavos += valor_convertido_centavos
 
     def verifica_senha(self, senha):
-        pass
+        return self._senha == senha
 
     @abstractmethod
     def info(self):
@@ -48,10 +61,14 @@ class ContaCorrente(ContaBancaria):
         self.__taxas_mensais = taxas_mensais
 
     def info(self):
-        pass
+        print(f"🏦 Banco: {self._banco}")
+        print(f"🔢 Conta: {self._numero_conta}")
+        print(f"👤 Titular: {self._titular}")
+        print(f"💰 Saldo: R$ {self.saldo:.2f}")
+        print(f"📉 Taxas: {self.__taxas_mensais} %")
 
     def novo_mes(self):
-        self._saldo -= self.__taxas_mensais
+        self.saldo -= (self.__taxas_mensais * 100)
 
 
 class ContaPoupanca(ContaBancaria):
@@ -67,7 +84,20 @@ class ContaPoupanca(ContaBancaria):
     ):
         super().__init__(titular, banco, numero_conta, saldo, senha)
         self.__rendimento = rendimento
+        self.__quantidade_saques = saques_mensais
         self.__saques_mensais = saques_mensais
+
+    def info(self):
+        pass
+
+    def novo_mes(self):
+        self._saldo += (self._saldo * self.__rendimento) / 100
+        self.__quantidade_saques = self.__saques_mensais
+
+    def saque(self, valor):
+        if self.__quantidade_saques > 0:
+            self._saldo -= valor
+            self.__quantidade_saques -= 1
 
 
 class Pessoa:
@@ -89,3 +119,27 @@ class Pessoa:
 
     def info_contas(self):
         pass
+
+
+class Banco:
+    def __init__(
+        self,
+        nome_banco,
+        cnpj,
+        numero_banco
+    ):
+        self.__nome_banco = nome_banco
+        self.__cnpj = cnpj
+        self.__numero_banco = numero_banco
+        self.__contas_bancarias = []
+
+    def criar_conta(self, conta):
+        self.__contas_bancarias.append(conta)
+
+    def fechar_conta(self, conta):
+        self.__contas_bancarias.remove(conta)
+
+
+cliente01 = ContaCorrente("Jeferson", "Brasil", "0001-1", 500.50, "xyz", 5)
+
+cliente01.info()
