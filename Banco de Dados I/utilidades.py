@@ -25,6 +25,9 @@ class Erro:
         "E04": "CPF inválido ou formato incorreto.",
         "E05": "CPF inválido.",
         "E06": "Código não localizado.",
+        "E07": "Órgão Emissor já cadastrado.",
+        "E08": "Órgão Emissor não cadastrado.",
+        "E09": "Código inválido.",
         "E100": "Caracter não suportado.",
         "E101": "Opção Inválida."
     }
@@ -355,4 +358,4 @@ def escolher_orgao_emissor(lista_de_orgaos) -> int:
         if escolha_orgao in lista_ids_orgaos:
             return escolha_orgao
         else:
-            print("ERRO000")
+            mostrar_erro("E09", cor=Cor.AMARELO)

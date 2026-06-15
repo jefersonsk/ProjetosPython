@@ -121,7 +121,7 @@ class BancoDeDados:
             if meu_banco is not None:
                 meu_banco.close()
 
-    def consultar_banco_sql(
+    def consultar_funcionario_sql(
         self, dados: str | int, tipo: str
     ) -> tuple | None:
 
@@ -155,7 +155,7 @@ class BancoDeDados:
             if meu_banco is not None:
                 meu_banco.close()
 
-    def excluir_banco_sql(self, dados: str):
+    def excluir_funcionario_sql(self, dados: str):
 
         meu_banco = None
         mycursor = None
@@ -178,7 +178,7 @@ class BancoDeDados:
             if meu_banco is not None:
                 meu_banco.close()
 
-    def alterar_banco_sql(
+    def alterar_funcionario_sql(
         self, id: str | int, coluna: str, novo_valor: str
     ):
 
@@ -253,7 +253,9 @@ class Sistema:
         self.nome_banco = nome_banco
 
     def cadastrar_orgao(self):
+
         while True:
+            flag = False
             imprimir_cabecalho("CADASTRO DE ÓRGÃO EMISSOR", cor=Cor.LARANJA)
 
             nome_orgao_digitado = verificar_vazio("NOME ÓRGÃO: ")
@@ -261,6 +263,12 @@ class Sistema:
             lista_orgaos = self.nome_banco.listar_orgaos_sql()
 
             for orgao in lista_orgaos:
+                if nome_orgao_digitado == orgao[1]:
+                    flag = True
+            
+            if flag:
+                mostrar_erro("E07", cor=Cor.AMARELO)
+                continue
 
             novo_orgao = OrgaoEmissor(nome_orgao_digitado)
             self.nome_banco.inserir_orgao_sql(novo_orgao)
@@ -274,7 +282,7 @@ class Sistema:
             else:
                 return
 
-    def inserir_dados(self):
+    def cadastrar_funcionario(self):
         while True:
             imprimir_cabecalho("CADASTRO DE FUNCIONÁRIOS", cor=Cor.LARANJA)
 
@@ -286,10 +294,10 @@ class Sistema:
             lista_de_orgaos = self.nome_banco.listar_orgaos_sql()
 
             if not lista_de_orgaos:
-                print("ERRO000")
+                mostrar_erro("E08", cor=Cor.AMARELO)
                 break
 
-            resultado_busca = self.nome_banco.consultar_banco_sql(cpf, "cpf")
+            resultado_busca = self.nome_banco.consultar_funcionario_sql(cpf, "cpf")
 
             if resultado_busca:
                 mostrar_erro("E01", Cor.AMARELO)
@@ -321,7 +329,7 @@ class Sistema:
             else:
                 return
 
-    def alterar_dados(self):
+    def alterar_funcionario(self):
         escolha_campos = {
             "1": "nome",
             "2": "cpf",
@@ -341,7 +349,7 @@ class Sistema:
             if not consulta_id:
                 return
 
-            resultado_busca = self.nome_banco.consultar_banco_sql(
+            resultado_busca = self.nome_banco.consultar_funcionario_sql(
                 consulta_id, "id")
 
             if not resultado_busca:
@@ -406,7 +414,7 @@ class Sistema:
                         cor=Cor.AZUL
                     )
 
-                self.nome_banco.alterar_banco_sql(
+                self.nome_banco.alterar_funcionario_sql(
                     consulta_id, nome_coluna, novo_valor
                 )
 
@@ -419,7 +427,7 @@ class Sistema:
             else:
                 return
 
-    def consultar_dados(self):
+    def consultar_funcionario(self):
         while True:
             imprimir_cabecalho("CONSULTAR FUNCIONÁRIO", cor=Cor.LARANJA)
 
@@ -431,7 +439,7 @@ class Sistema:
                 return
 
             resultado_busca = (
-                self.nome_banco.consultar_banco_sql(consulta_id, "id")
+                self.nome_banco.consultar_funcionario_sql(consulta_id, "id")
             )
 
             if not resultado_busca:
@@ -445,7 +453,7 @@ class Sistema:
             else:
                 return
 
-    def excluir_dados(self):
+    def excluir_funcionario(self):
         while True:
             imprimir_cabecalho("EXCLUSÃO DE FUNCIONÁRIO", cor=Cor.LARANJA)
 
@@ -457,7 +465,7 @@ class Sistema:
                 return
 
             resultado_busca = (
-                self.nome_banco.consultar_banco_sql(consulta_id, "id")
+                self.nome_banco.consultar_funcionario_sql(consulta_id, "id")
             )
 
             if not resultado_busca:
@@ -472,7 +480,7 @@ class Sistema:
                 f"{Cor.RESET}"
             )
             if continuar():
-                self.nome_banco.excluir_banco_sql(consulta_id)
+                self.nome_banco.excluir_funcionario_sql(consulta_id)
                 imprimir_cabecalho(
                     "Cadastro excluído com sucesso", cor=Cor.AMARELO
                 )
@@ -482,6 +490,7 @@ class Sistema:
     def iniciar_sistema(self):
 
         opcoes_menu = [
+            "CADASTRAR ORGÃO EMISSOR",
             "CADASTRAR FUNCIONÁRIO",
             "ALTERAR FUNCIONÁRIO",
             "CONSULTAR FUNCIONÁRIO",
@@ -489,10 +498,11 @@ class Sistema:
         ]
 
         escolha_menu = {
-            1: self.inserir_dados,
-            2: self.alterar_dados,
-            3: self.consultar_dados,
-            4: self.excluir_dados
+            1: self.cadastrar_orgao,
+            2: self.cadastrar_funcionario,
+            3: self.alterar_funcionario,
+            4: self.consultar_funcionario,
+            5: self.excluir_funcionario
         }
 
         while True:
