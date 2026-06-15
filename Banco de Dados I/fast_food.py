@@ -11,6 +11,7 @@ from utilidades import (
     validar_cpf,
     imprimir_dados_na_tela,
     escolher_categoria,
+    escolher_orgao_emissor,
     Cor
 )
 from mysql.connector import Error
@@ -48,7 +49,38 @@ class BancoDeDados:
             database=self.nome_banco
         )
 
-    def inserir_banco_sql(self, novo_funcionario):
+    def inserir_orgao_sql(self, novo_orgao):
+        meu_banco = None
+        mycursor = None
+
+        try:
+            meu_banco = self.iniciar_banco()
+            mycursor = meu_banco.cursor()
+            dados = (
+                novo_orgao.nome_orgao
+            )
+            comando_sql_insercao = """
+                INSERT INTO orgaos_emissores
+                    (
+                        nome_orgao    
+                    )
+                VALUES
+                    (%s)
+            """
+            mycursor.execute(comando_sql_insercao, [dados])
+            meu_banco.commit()
+
+        except Error as erro:
+            print(f"\n❌ Erro crítico ao salvar no banco de dados: {erro}")
+
+        finally:
+            if mycursor is not None:
+                mycursor.close()
+
+            if meu_banco is not None:
+                meu_banco.close()
+
+    def inserir_funcionario_sql(self, novo_funcionario):
 
         meu_banco = None
         mycursor = None
@@ -174,6 +206,34 @@ class BancoDeDados:
             if meu_banco is not None:
                 meu_banco.close()
 
+    def listar_orgaos_sql(self) -> list | None:
+
+        meu_banco = None
+        mycursor = None
+
+        try:
+            meu_banco = self.iniciar_banco()
+            mycursor = meu_banco.cursor()
+            comando_sql_consulta = (
+                "SELECT * FROM orgaos_emissores"
+            )
+            mycursor.execute(comando_sql_consulta)
+            resultado_cosulta = mycursor.fetchall()
+
+            return resultado_cosulta
+
+        except Error as erro:
+            print(f"\n❌ Erro crítico ao acessar o banco de dados:")
+            print(f"{Cor.AMARELO}{erro}{Cor.RESET}")
+            return
+
+        finally:
+            if mycursor is not None:
+                mycursor.close()
+
+            if meu_banco is not None:
+                meu_banco.close()
+
 
 class Funcionarios:
     def __init__(
@@ -192,6 +252,28 @@ class Sistema:
     def __init__(self, nome_banco):
         self.nome_banco = nome_banco
 
+    def cadastrar_orgao(self):
+        while True:
+            imprimir_cabecalho("CADASTRO DE ÓRGÃO EMISSOR", cor=Cor.LARANJA)
+
+            nome_orgao_digitado = verificar_vazio("NOME ÓRGÃO: ")
+
+            lista_orgaos = self.nome_banco.listar_orgaos_sql()
+
+            for orgao in lista_orgaos:
+
+            novo_orgao = OrgaoEmissor(nome_orgao_digitado)
+            self.nome_banco.inserir_orgao_sql(novo_orgao)
+
+            imprimir_cabecalho("ORGÃO EMISSOR SALVO COM SUCESSO.")
+
+            pausar()
+
+            if continuar():
+                continue
+            else:
+                return
+
     def inserir_dados(self):
         while True:
             imprimir_cabecalho("CADASTRO DE FUNCIONÁRIOS", cor=Cor.LARANJA)
@@ -201,6 +283,12 @@ class Sistema:
             if not cpf:
                 return
 
+            lista_de_orgaos = self.nome_banco.listar_orgaos_sql()
+
+            if not lista_de_orgaos:
+                print("ERRO000")
+                break
+
             resultado_busca = self.nome_banco.consultar_banco_sql(cpf, "cpf")
 
             if resultado_busca:
@@ -209,7 +297,7 @@ class Sistema:
 
             nome = verificar_vazio("NOME: ", Cor.CIANO)
             rg = verificar_vazio("RG: ", Cor.CIANO)
-            orgao_emissor = verificar_vazio("ORGÃO EMISSOR: ", Cor.CIANO)
+            orgao_emissor = escolher_orgao_emissor(lista_de_orgaos)
             categoria_funcional = escolher_categoria()
             salario = verificar_numero(
                 "SALARIO: R$ ",
@@ -222,7 +310,7 @@ class Sistema:
                 nome, cpf, rg, orgao_emissor, categoria_funcional, salario
             )
 
-            self.nome_banco.inserir_banco_sql(novo_cadastro_funcionario)
+            self.nome_banco.inserir_funcionario_sql(novo_cadastro_funcionario)
 
             imprimir_cabecalho("DADOS SALVOS COM SUCESSO.")
 
@@ -428,6 +516,15 @@ class Sistema:
                 break
             else:
                 mostrar_erro("E101", Cor.VERMELHO)
+
+
+class OrgaoEmissor:
+    def __init__(self, nome_orgao, id=None):
+        self.id = id
+        self.nome_orgao = nome_orgao
+
+    def __str__(self):
+        return f"ID: {self.id} - Orgão Emissor: {self.nome_orgao}"
 
 
 if __name__ == "__main__":

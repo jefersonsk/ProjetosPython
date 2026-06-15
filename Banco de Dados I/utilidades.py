@@ -334,3 +334,25 @@ def escolher_categoria() -> str:
             return opcoes_categoria.get(escolha_categoria)
         else:
             mostrar_erro("E06", cor=Cor.AMARELO)
+
+
+def escolher_orgao_emissor(lista_de_orgaos) -> int:
+    lista_ids_orgaos = []
+
+    print("ESCOLHA ORGÃO EMISSOR:")
+
+    for orgao in lista_de_orgaos:
+        print(f"[{orgao[0]}]: {orgao[1]}")
+        lista_ids_orgaos.append(orgao[0])
+
+    while True:
+        escolha_orgao = verificar_numero(
+            "ORGÃO EMISSOR: ",
+            tipo_conversao=int,
+            cor=Cor.CIANO
+        )
+
+        if escolha_orgao in lista_ids_orgaos:
+            return escolha_orgao
+        else:
+            print("ERRO000")
