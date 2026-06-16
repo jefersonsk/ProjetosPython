@@ -65,10 +65,11 @@ class ContaCorrente(ContaBancaria):
         print(f"🔢 Conta: {self._numero_conta}")
         print(f"👤 Titular: {self._titular}")
         print(f"💰 Saldo: R$ {self.saldo:.2f}")
-        print(f"📉 Taxas: {self.__taxas_mensais} %")
+        print(f"📉 Taxas: R$ {self.__taxas_mensais:.2f}")
 
     def novo_mes(self):
-        self.saldo -= (self.__taxas_mensais * 100)
+        taxa_convertida_centavos = int(self.__taxas_mensais * 100)
+        self._saldo_centavos -= taxa_convertida_centavos
 
 
 class ContaPoupanca(ContaBancaria):
@@ -88,7 +89,11 @@ class ContaPoupanca(ContaBancaria):
         self.__saques_mensais = saques_mensais
 
     def info(self):
-        pass
+        print(f"🏦 Banco: {self._banco}")
+        print(f"🔢 Conta: {self._numero_conta}")
+        print(f"👤 Titular: {self._titular}")
+        print(f"💰 Saldo: R$ {self.saldo:.2f}")
+        print(f"📉 Rendimentos: R$ {self.__taxas_mensais:.2f}")
 
     def novo_mes(self):
         self._saldo += (self._saldo * self.__rendimento) / 100
