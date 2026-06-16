@@ -425,6 +425,8 @@ class Sistema:
 
             escolhas_separadas = opcoes_digitadas.split(",")
 
+            print(f"{Cor.AMARELO}Digite os novos valores para: ")
+
             for opcao in escolhas_separadas:
                 opcao = opcao.strip()
                 nome_coluna = escolha_campos.get(opcao)
@@ -442,7 +444,6 @@ class Sistema:
 
                 if nome_coluna == "salario":
                     novo_valor = verificar_numero(
-                        "Digite o novo valor para "
                         f"[{nome_coluna.upper()}]: R$ ",
                         tipo_conversao=float,
                         cor=Cor.AZUL,
@@ -452,7 +453,7 @@ class Sistema:
                     novo_valor = escolher_categoria()
                 else:
                     novo_valor = verificar_vazio(
-                        f"Digite o novo valor para [{nome_coluna.upper()}]: ",
+                        f"[{nome_coluna.upper()}]: ",
                         cor=Cor.AZUL
                     )
 
