@@ -54,8 +54,6 @@ function validarJQuery() {
 
     const regexSigla = /^[A-Z]{3,5}$/;
 
-    // O seletor pode selecionar a classe, no exemplo abaixo .obg
-    // Pode o selettor pode selecionar os componentes classes, tags, ids
     var x = $('.obg');
     for (var i=0; i<x.length; i++) {
         if (x[i].value == '') {
@@ -78,12 +76,63 @@ function validarJQuery() {
 }
 
 function buscarcep() {
-    var params ='{}';
+    var params = '{}';
     $.ajax({
         type: "GET",
-        url: "https//viacep.com.br/ws/"+$('#cep').val()+"/json/",
+        url: "https://viacep.com.br/ws/"+$('#cep').val()+"/json/",
         data: params,
-    })
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(msg, status) {    
+            $('#logradouro').val(msg.logradouro);
+            $('#bairro').val(msg.bairro);
+            $('#cidade').val(msg.localidade);
+            $('#estado').val(msg.uf);
+        },
+        error: function(xhr, msg, e) {
+            alert(xhr.responseJSON.message);
+        }
+    });
 }
 
-// Comunicação assincrona e componentes prontos
+function popularEstudantes() {
+    var params = '{}';
+
+   $('#corpotab').empty();
+
+    $.ajax({
+        type: "GET",  
+        url: "https://ensino.ifrs.edu.br/auxilioestudantil/ws/ApiEstudantes.php?nome="+$('#nome').val()+"&unidade=11",
+        data: params,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(msg, status) {
+            for (var i=0; i<msg.length; i++) {
+                $('#corpotab').append("<tr><td>"+msg[i].id+"</td><td>"+msg[i].nome+"</td><td>"+msg[i].cpf+"</td></tr>")
+            }
+        },
+        error: function(xhr, msg, e) {
+            alert(JSON.stringify(xhr));
+        }
+    });  
+}
+
+$(document).ready(function () {
+    popularEstudantes();
+    
+    $('.DataTable').each(function () {
+        var table = $(this);
+
+        table.DataTable({
+            paging: true,
+            ordering: true,
+            language: { 
+                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+            },
+            columnDefs: [
+                { orderable: true, targets: 0 } 
+            ],
+			order: [[1, 'asc']]
+        });
+    });
+});

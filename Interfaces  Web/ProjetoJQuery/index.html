@@ -3,8 +3,7 @@
         <title>Exercício 04</title>
         <meta charset="UTF-8">
         <link href="estilos.css" rel="stylesheet" type="text/css">
-        <!-- Link CDN JQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="validacoes.js"></script>
     </head>
     <body>
@@ -13,7 +12,7 @@
             <hr>
             <ul id="erros">
             </ul>
-            <form action="processamento.py" onsubmit="return validarJQuery()" method="post"
+            <form action="processamento.py" onsubmit="return validarJQuery()" method="post">
                 <label for="sigla">Sigla:</label>
                 <input type="text" id="sigla" name="sigla" size="10" class="obg"><br><br>
 
@@ -24,10 +23,16 @@
                 <input type="date" id="data" name="data" size="20" class="obg"><br><br>
 
                 <label for="cep">CEP:</label>
-                <input type="text" id="cep" name="cep" size="10"><input type="button" value="Buscar Endereço" onclick="buscarcep()"><br><br>
+                <input type="text" id="cep" name="cep" size="10" onblur="buscarcep()"><!--input type="button" value="Buscar Endereço" onclick="buscarcep()"--><br><br>
 
                 <label for="logradouro">Logradouro:</label>
-                <input type="text" id="logradouro" name="logradouro" size="30"><br><br>
+                <input type="text" id="logradouro" name="logradouro" size="30" readonly="readonly"><br><br>
+
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" name="bairro" size="30"><br><br>
+
+                <label for="cidade">Bairro:</label>
+                <input type="text" id="cidade" name="cidade" size="30"><br><br>
 
                 <label for="estado">Estado:</label>
                 <select id="estado" name="estado" class="obg">
@@ -36,6 +41,8 @@
                     <option value="RS">Rio Grande do Sul</option>
                     <option value="SC">Santa Catarina</option>
                 </select><br><br>
+
+
 
                 <input type="submit" value="Salvar">
                 <input type="reset" value="Limpar">

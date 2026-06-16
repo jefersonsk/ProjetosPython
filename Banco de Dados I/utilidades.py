@@ -118,16 +118,18 @@ def pausar() -> None:
     input("\nPressione ENTER para continuar...\n")
 
 
-def imprimir_dados_na_tela(dados: tuple):
-    print(f"{Cor.CIANO}NOME: {Cor.AMARELO}{dados[1]}")
+def imprimir_dados_na_tela(dados_funcionario: tuple, dados_orgao: str):
+    id_orgao = dados_funcionario[6]
+
+    print(f"{Cor.CIANO}NOME: {Cor.AMARELO}{dados_funcionario[1]}")
     print(
-        f"{Cor.CIANO}CPF: {Cor.AMARELO}{dados[2]:<20}"
-        f"{Cor.CIANO}RG: {Cor.AMARELO}{dados[3]:<20}"
-        f"{Cor.CIANO}ORGÃO EMISSOR: {Cor.AMARELO}{dados[4]}"
+        f"{Cor.CIANO}CPF: {Cor.AMARELO}{dados_funcionario[2]:<20}"
+        f"{Cor.CIANO}RG: {Cor.AMARELO}{dados_funcionario[3]:<20}"
+        f"{Cor.CIANO}ORGÃO EMISSOR: {Cor.AMARELO}{dados_orgao}"
     )
     print(
-        f"{Cor.CIANO}SALÁRIO: R$ {Cor.AMARELO}{dados[5]:<13}"
-        f"{Cor.CIANO}CATEGORIA: {Cor.AMARELO}{dados[6]}"
+        f"{Cor.CIANO}SALÁRIO: R$ {Cor.AMARELO}{dados_funcionario[5]:<13}"
+        f"{Cor.CIANO}CATEGORIA: {Cor.AMARELO}{dados_funcionario[4]}"
         f"{Cor.RESET}"
     )
 
@@ -342,15 +344,15 @@ def escolher_categoria() -> str:
 def escolher_orgao_emissor(lista_de_orgaos) -> int:
     lista_ids_orgaos = []
 
-    print("ESCOLHA ORGÃO EMISSOR:")
+    print(f"{Cor.AMARELO}ESCOLHA ORGÃO EMISSOR:{Cor.RESET}")
 
     for orgao in lista_de_orgaos:
-        print(f"[{orgao[0]}]: {orgao[1]}")
+        print(f"[{orgao[0]}]: {orgao[1]}", end=5 * " ")
         lista_ids_orgaos.append(orgao[0])
 
     while True:
         escolha_orgao = verificar_numero(
-            "ORGÃO EMISSOR: ",
+            "\nORGÃO EMISSOR: ",
             tipo_conversao=int,
             cor=Cor.CIANO
         )

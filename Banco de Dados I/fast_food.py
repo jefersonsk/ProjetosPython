@@ -62,11 +62,12 @@ class BancoDeDados:
             comando_sql_insercao = """
                 INSERT INTO orgaos_emissores
                     (
-                        nome_orgao    
+                        orgao_emissor    
                     )
                 VALUES
                     (%s)
             """
+
             mycursor.execute(comando_sql_insercao, [dados])
             meu_banco.commit()
 
@@ -91,7 +92,7 @@ class BancoDeDados:
             dados = (novo_funcionario.nome,
                      novo_funcionario.cpf,
                      novo_funcionario.rg,
-                     novo_funcionario.orgao_emissor,
+                     novo_funcionario.orgaos_emissores_id,
                      novo_funcionario.categoria_funcional,
                      novo_funcionario.salario
                      )
@@ -101,7 +102,7 @@ class BancoDeDados:
                         nome,
                         cpf,
                         rg,
-                        orgao_emissor,
+                        orgaos_emissores_id,
                         categoria_funcional,
                         salario
                     )
@@ -139,9 +140,9 @@ class BancoDeDados:
                 f"SELECT * FROM funcionarios WHERE {tipo} = %s"
             )
             mycursor.execute(comando_sql_consulta, [dados])
-            resultado_cosulta = mycursor.fetchone()
+            resultado_consulta = mycursor.fetchone()
 
-            return resultado_cosulta
+            return resultado_consulta
 
         except Error as erro:
             print(f"\n❌ Erro crítico ao acessar o banco de dados:")
@@ -234,16 +235,43 @@ class BancoDeDados:
             if meu_banco is not None:
                 meu_banco.close()
 
+    def consultar_orgao_sql(self, dados: str):
+
+        meu_banco = None
+        mycursor = None
+
+        try:
+            meu_banco = self.iniciar_banco()
+            mycursor = meu_banco.cursor()
+            comando_sql_consulta = (
+                f"SELECT * FROM orgaos_emissores WHERE id = %s"
+            )
+            mycursor.execute(comando_sql_consulta, [dados])
+            resultado_consulta = mycursor.fetchone()
+
+            return resultado_consulta[1]
+
+        except Error as erro:
+            print(f"\n❌ Erro crítico ao excluir no banco de dados: {erro}")
+            return
+
+        finally:
+            if mycursor is not None:
+                mycursor.close()
+
+            if meu_banco is not None:
+                meu_banco.close()
+
 
 class Funcionarios:
     def __init__(
-        self, nome, cpf, rg, orgao_emissor, categoria_funcional, salario
+        self, nome, cpf, rg, orgaos_emissores_id, categoria_funcional, salario
     ):
 
         self.nome = nome
         self.cpf = cpf
         self.rg = rg
-        self.orgao_emissor = orgao_emissor
+        self.orgaos_emissores_id = orgaos_emissores_id
         self.categoria_funcional = categoria_funcional
         self.salario = salario
 
@@ -258,14 +286,17 @@ class Sistema:
             flag = False
             imprimir_cabecalho("CADASTRO DE ÓRGÃO EMISSOR", cor=Cor.LARANJA)
 
-            nome_orgao_digitado = verificar_vazio("NOME ÓRGÃO: ")
+            nome_orgao_digitado = enter_para_sair("NOME ÓRGÃO: ", cor=Cor.AZUL)
+
+            if not nome_orgao_digitado:
+                return
 
             lista_orgaos = self.nome_banco.listar_orgaos_sql()
 
             for orgao in lista_orgaos:
                 if nome_orgao_digitado == orgao[1]:
                     flag = True
-            
+
             if flag:
                 mostrar_erro("E07", cor=Cor.AMARELO)
                 continue
@@ -297,7 +328,8 @@ class Sistema:
                 mostrar_erro("E08", cor=Cor.AMARELO)
                 break
 
-            resultado_busca = self.nome_banco.consultar_funcionario_sql(cpf, "cpf")
+            resultado_busca = self.nome_banco.consultar_funcionario_sql(
+                cpf, "cpf")
 
             if resultado_busca:
                 mostrar_erro("E01", Cor.AMARELO)
@@ -305,7 +337,7 @@ class Sistema:
 
             nome = verificar_vazio("NOME: ", Cor.CIANO)
             rg = verificar_vazio("RG: ", Cor.CIANO)
-            orgao_emissor = escolher_orgao_emissor(lista_de_orgaos)
+            nome_orgao = escolher_orgao_emissor(lista_de_orgaos)
             categoria_funcional = escolher_categoria()
             salario = verificar_numero(
                 "SALARIO: R$ ",
@@ -315,7 +347,7 @@ class Sistema:
             )
 
             novo_cadastro_funcionario = Funcionarios(
-                nome, cpf, rg, orgao_emissor, categoria_funcional, salario
+                nome, cpf, rg, nome_orgao, categoria_funcional, salario
             )
 
             self.nome_banco.inserir_funcionario_sql(novo_cadastro_funcionario)
@@ -334,7 +366,7 @@ class Sistema:
             "1": "nome",
             "2": "cpf",
             "3": "rg",
-            "4": "orgao_emissor",
+            "4": "orgaos_emissores_id",
             "5": "salario",
             "6": "categoria_funcional"
         }
@@ -349,14 +381,19 @@ class Sistema:
             if not consulta_id:
                 return
 
-            resultado_busca = self.nome_banco.consultar_funcionario_sql(
-                consulta_id, "id")
+            resultado_busca_funcionario = (
+                self.nome_banco.consultar_funcionario_sql(consulta_id, "id")
+            )
+            resultado_busca_orgao = self.nome_banco.consultar_orgao_sql(
+                resultado_busca_funcionario[6]
+            )
 
-            if not resultado_busca:
+            if not resultado_busca_funcionario:
                 mostrar_erro("E03", Cor.AMARELO)
                 continue
 
-            imprimir_dados_na_tela(resultado_busca)
+            imprimir_dados_na_tela(
+                resultado_busca_funcionario, resultado_busca_orgao)
 
             print(f"{Cor.VERDE}CAMPOS DISPONÍVEIS PARA ALTERAÇÃO:")
             print(
@@ -399,9 +436,14 @@ class Sistema:
                     )
                     continue
 
+                if nome_coluna == "orgaos_emissores_id":
+                    lista_de_orgaos = self.nome_banco.listar_orgaos_sql()
+                    novo_valor = escolher_orgao_emissor(lista_de_orgaos)
+
                 if nome_coluna == "salario":
                     novo_valor = verificar_numero(
-                        f"Digite o novo valor para [{nome_coluna.upper()}]: R$ ",
+                        "Digite o novo valor para "
+                        f"[{nome_coluna.upper()}]: R$ ",
                         tipo_conversao=float,
                         cor=Cor.AZUL,
                         permitir_zero=True,
@@ -438,15 +480,20 @@ class Sistema:
             if not consulta_id:
                 return
 
-            resultado_busca = (
+            resultado_busca_funcionario = (
                 self.nome_banco.consultar_funcionario_sql(consulta_id, "id")
             )
+            resultado_busca_orgao = self.nome_banco.consultar_orgao_sql(
+                resultado_busca_funcionario[6]
+            )
 
-            if not resultado_busca:
+            if not resultado_busca_funcionario:
                 mostrar_erro("E03", Cor.AMARELO)
                 continue
 
-            imprimir_dados_na_tela(resultado_busca)
+            imprimir_dados_na_tela(
+                resultado_busca_funcionario, resultado_busca_orgao
+            )
 
             if continuar():
                 continue
