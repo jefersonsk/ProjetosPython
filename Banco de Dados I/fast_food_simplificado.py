@@ -18,20 +18,6 @@ from mysql.connector import Error
 import mysql.connector
 import os
 
-# Para chamar as variáveis de ambiente precisa fazer esssa instalação
-# pip install python-dotenv
-from pathlib import Path
-from dotenv import load_dotenv
-
-# 1. Pega a pasta exata onde este script (main) está salvo
-pasta_do_script = Path(__file__).parent
-
-# 2. Junta essa pasta com o nome do arquivo secreto
-caminho_env = pasta_do_script / ".env"
-
-# 3. Força o carregamento a partir desse caminho exato
-load_dotenv(caminho_env)
-
 
 class BancoDeDados:
     def __init__(self, host, user, password, nome_banco):
@@ -598,12 +584,8 @@ class OrgaoEmissor:
 
 
 if __name__ == "__main__":
-    # banco_fastfood = BancoDeDados(
-    #     "localhost", "root", os.getenv("SENHA_BANCO"), "fastfood"
-    # )
-
     banco_fastfood = BancoDeDados(
-        "localhost", "root", os.getenv("SENHA_BANCO"), "fastfood"
+        "localhost", "root", "SENHA_BANCO", "fastfood"
     )
     main = Sistema(banco_fastfood)
     main.iniciar_sistema()

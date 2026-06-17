@@ -335,7 +335,10 @@ def escolher_categoria() -> str:
         )
 
         if escolha_categoria in opcoes_categoria:
-            print(f"CATEGORIA: {opcoes_categoria.get(escolha_categoria)}")
+            print(
+                f"{Cor.CIANO}CATEGORIA:{Cor.RESET} "
+                f"{opcoes_categoria.get(escolha_categoria)}"
+            )
             return opcoes_categoria.get(escolha_categoria)
         else:
             mostrar_erro("E06", cor=Cor.AMARELO)
