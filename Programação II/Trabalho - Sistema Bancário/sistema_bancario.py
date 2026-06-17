@@ -65,8 +65,8 @@ class ContaCorrente(ContaBancaria):
         print(f"🔢 Conta: {self._numero_conta}")
         print(f"👤 Titular: {self._titular}")
         print(f"💰 Saldo: R$ {self.saldo:.2f}")
-        print(f"📉 Taxas: R$ {self.__taxas_mensais:.2f}")
-
+        print(f"📉 Taxas Mensais: R$ {self.__taxas_mensais:.2f}")
+        
     def novo_mes(self):
         taxa_convertida_centavos = int(self.__taxas_mensais * 100)
         self._saldo_centavos -= taxa_convertida_centavos
@@ -93,7 +93,7 @@ class ContaPoupanca(ContaBancaria):
         print(f"🔢 Conta: {self._numero_conta}")
         print(f"👤 Titular: {self._titular}")
         print(f"💰 Saldo: R$ {self.saldo:.2f}")
-        print(f"📉 Rendimentos: R$ {self.__taxas_mensais:.2f}")
+        print(f"📈 Rendimento: {self.__rendimento} %")
 
     def novo_mes(self):
         self._saldo += (self._saldo * self.__rendimento) / 100
@@ -101,8 +101,11 @@ class ContaPoupanca(ContaBancaria):
 
     def saque(self, valor):
         if self.__quantidade_saques > 0:
-            self._saldo -= valor
+            super().saque(valor)
+
             self.__quantidade_saques -= 1
+        else:
+            print("Limite de saques excedidos.")
 
 
 class Pessoa:
@@ -120,7 +123,11 @@ class Pessoa:
         self.__contas_bancarias = []
 
     def info(self):
-        pass
+        print(f"NOME: {self.nome}")
+        print(f"SOBRENOME: {self.sobrenome}")
+        print(f"CPF: {self.__cpf}")
+        print(f"IDADE: {self.idade}")
+        
 
     def info_contas(self):
         pass
