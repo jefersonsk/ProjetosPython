@@ -1,4 +1,8 @@
 from abc import ABC, abstractmethod
+from utilidades import Cor
+from utilidades import (
+    verificar_numero
+)
 
 
 class ContaBancaria(ABC):
@@ -24,19 +28,39 @@ class ContaBancaria(ABC):
     def saldo(self, valor_em_reais):
         self._saldo_centavos = int(valor_em_reais * 100)
 
-    def saque(self, valor_em_reais):
-        valor_convertido_centavos = int(valor_em_reais * 100)
-        if self._saldo_centavos < valor_convertido_centavos:
-            print("Saldo Insuficiente.")
-        else:
-            self._saldo_centavos -= valor_convertido_centavos
+    def saque(self, valor_em_reais=None):
+        if self.verifica_senha():
+            if valor_em_reais is None:
+                valor_em_reais = verificar_numero(
+                    "Digite o Valor: R$ ",
+                    tipo_conversao=float,
+                    cor=Cor.AZUL
+                )
+
+            if valor_em_reais <= 0:
+                print("Valor inválido para saque.")
+                return
+
+            valor_convertido_centavos = int(valor_em_reais * 100)
+
+            if self._saldo_centavos < valor_convertido_centavos:
+                print("Saldo Insuficiente.")
+            else:
+                self._saldo_centavos -= valor_convertido_centavos
 
     def deposito(self, valor_em_reais):
         valor_convertido_centavos = int(valor_em_reais * 100)
         self._saldo_centavos += valor_convertido_centavos
 
-    def verifica_senha(self, senha):
-        return self._senha == senha
+    def verifica_senha(self, senha=None):
+        if senha is None:
+            senha = input("Digite sua senha: ")
+
+        if self._senha == senha:
+            return True
+        else:
+            print("Aviso: Senha Incorreta.")
+            return False
 
     @abstractmethod
     def info(self):
@@ -134,8 +158,11 @@ class Pessoa:
         for conta in self.__contas_bancarias:
             conta.info()
 
+    def adicionar_conta(self, conta):
+        self.__contas_bancarias.append(conta)
+
     @classmethod
-    def criar_pessoa_pelo_teclado(cls):
+    def criar_pessoa(cls):
         nome = input("NOME: ")
         sobrenome = input("SOBRENOME: ")
         cpf = input("CPF: ")
@@ -161,6 +188,13 @@ class Banco:
 
     def fechar_conta(self, conta):
         self.__contas_bancarias.remove(conta)
+
+    @classmethod
+    def criar_banco(cls):
+        nome_banco = input("NOME DO BANCO: ")
+        cnpj = input("CNPJ: ")
+        numero_banco = input("NUMERO DO BANCO: ")
+        return cls(nome_banco, cnpj, numero_banco)
 
 
 cliente01 = ContaCorrente("Jeferson", "Brasil", "0001-1", 500.50, "xyz", 5)
