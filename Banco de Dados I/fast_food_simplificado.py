@@ -585,7 +585,7 @@ class OrgaoEmissor:
 
 if __name__ == "__main__":
     banco_fastfood = BancoDeDados(
-        "localhost", "root", "SENHA_BANCO", "fastfood"
+        "localhost", "root", "Jsk@391975", "fastfood"
     )
     main = Sistema(banco_fastfood)
     main.iniciar_sistema()

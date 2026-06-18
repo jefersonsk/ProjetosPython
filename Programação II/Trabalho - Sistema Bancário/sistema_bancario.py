@@ -66,7 +66,7 @@ class ContaCorrente(ContaBancaria):
         print(f"👤 Titular: {self._titular}")
         print(f"💰 Saldo: R$ {self.saldo:.2f}")
         print(f"📉 Taxas Mensais: R$ {self.__taxas_mensais:.2f}")
-        
+
     def novo_mes(self):
         taxa_convertida_centavos = int(self.__taxas_mensais * 100)
         self._saldo_centavos -= taxa_convertida_centavos
@@ -96,7 +96,9 @@ class ContaPoupanca(ContaBancaria):
         print(f"📈 Rendimento: {self.__rendimento} %")
 
     def novo_mes(self):
-        self._saldo += (self._saldo * self.__rendimento) / 100
+        self._saldo_centavos += int(
+            (self._saldo_centavos * self.__rendimento) / 100
+        )
         self.__quantidade_saques = self.__saques_mensais
 
     def saque(self, valor):
@@ -113,13 +115,13 @@ class Pessoa:
         self,
         nome,
         sobrenome,
-        idade,
-        cpf
+        cpf,
+        idade
     ):
         self.nome = nome
         self.sobrenome = sobrenome
-        self.idade = idade
         self.__cpf = cpf
+        self.idade = idade
         self.__contas_bancarias = []
 
     def info(self):
@@ -127,10 +129,19 @@ class Pessoa:
         print(f"SOBRENOME: {self.sobrenome}")
         print(f"CPF: {self.__cpf}")
         print(f"IDADE: {self.idade}")
-        
 
     def info_contas(self):
-        pass
+        for conta in self.__contas_bancarias:
+            conta.info()
+
+    @classmethod
+    def criar_pessoa_pelo_teclado(cls):
+        nome = input("NOME: ")
+        sobrenome = input("SOBRENOME: ")
+        cpf = input("CPF: ")
+        idade = input("IDADE: ")
+
+        return cls(nome, sobrenome, cpf, idade)
 
 
 class Banco:
