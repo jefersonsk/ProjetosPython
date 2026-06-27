@@ -1,4 +1,5 @@
 import unicodedata
+import re
 
 
 class Cor:
@@ -19,17 +20,19 @@ class Cor:
 
 class Erro:
     MENSAGENS = {
-        "E01": "CPF já cadastrado.",
-        "E02": "Tipo não autorizado.",
-        "E03": "ID não localizado.",
-        "E04": "CPF inválido ou formato incorreto.",
-        "E05": "CPF inválido.",
-        "E06": "Código não localizado.",
-        "E07": "Órgão Emissor já cadastrado.",
-        "E08": "Órgão Emissor não cadastrado.",
-        "E09": "Código inválido.",
+        "E01": "Valor inválido para saque.",
+        "E02": "Saldo Insuficiente.",
+        "E03": "Valor inválido para depósito.",
+        "E04": "Senha Incorreta.",
+        "E05": "Limite de saques excedidos.",
+        "E06": "Cliente não encontrado.",
+        "E07": "CPF inválido.",
+        "E08": "CPF já cadastrado no sistema.",
+        "E09": "CNPJ inválido.",
+        "E08": "CNPJ já cadastrado no sistema.",
         "E100": "Caracter não suportado.",
-        "E101": "Opção Inválida."
+        "E101": "Opção Inválida.",
+        "E102": "Campo não pode ser vazio."
     }
 
 
@@ -38,7 +41,9 @@ class Erro:
 # ======================================
 
 
-def criar_menu(lista: list, bloqueado: bool = False, tipo: str = "principal") -> None:
+def criar_menu(
+    lista: list, bloqueado: bool = False, tipo: str = "principal"
+) -> None:
     """
     Cria menu conforme a lista informada, com opção de tipos
     "principal" e "submenu"
@@ -90,7 +95,7 @@ def imprimir_linha(caracter: str = "-", quantidade: int = 80) -> None:
     print(quantidade * caracter)
 
 
-def mostrar_erro(codigo: str, cor: str) -> None:
+def mostrar_erro(codigo: str, cor: str = "Cor.AMARELO") -> None:
     """
     Mostra mensagem de erro conforme código informado. Códigos e mensagens estão armazendados no dicionário MENSAGEM_ERRO.
 
@@ -199,7 +204,7 @@ def continuar() -> bool:
         elif opcao.upper() == "N":
             return False
         else:
-            mostrar_erro("E02", Cor.VERMELHO)
+            mostrar_erro("E101", Cor.VERMELHO)
 
 
 def enter_para_sair(texto: str, cor: str) -> bool:
@@ -281,7 +286,7 @@ def validar_cpf(mensagem: str, cor: str) -> str | bool:
             return False
 
         # Retira pontos e hífens do CPF
-        cpf_normalizado = cpf_digitado.replace(".", "").replace("-", "")
+        cpf_normalizado = re.sub(r"\D", "", cpf_digitado)
 
         """ 
             Verifica se o CPF tem 11 dígitos, se todos os dígitos são
@@ -292,7 +297,7 @@ def validar_cpf(mensagem: str, cor: str) -> str | bool:
             or not cpf_normalizado.isdigit()
             or len(set(cpf_normalizado)) == 1
         ):
-            mostrar_erro("E04", Cor.AMARELO)
+            mostrar_erro("E07", Cor.AMARELO)
             continue
 
         # Calcula o primeiro dígito verificador
@@ -326,4 +331,57 @@ def validar_cpf(mensagem: str, cor: str) -> str | bool:
         if cpf_normalizado == verificacao_cpf:
             return verificacao_cpf
         else:
-            mostrar_erro("E05", Cor.AMARELO)
+            mostrar_erro("E07", Cor.AMARELO)
+
+
+def validar_cnpj(mensagem: str, cor: str) -> str | bool:
+    """
+    Args:
+        mensagem (str): Mensagem que será mostrada para o usuário.
+        cor (str): Cor escolhida para o texto.
+
+    Retorno:
+        str | bool: Retorna str quando o CNPJ é valido ou False(bool) se
+        o Enter é pressionado para sair.
+    """
+    while True:
+        cnpj_digitado = enter_para_sair(mensagem, cor)
+
+        if not cnpj_digitado:
+            return False
+
+        # Retira pontos e hífens do CNPJ
+        cnpj_normalizado = re.sub(r"[^a-zA-Z0-9]", "", cnpj_digitado).upper()
+
+        """ 
+            Verifica se o CNPJ tem 14 dígitos, se todos os dígitos são
+            números e se não são todos iguais.
+        """
+        if (
+            len(cnpj_normalizado) != 14
+            or not cnpj_normalizado.isalnum()
+            or len(set(cnpj_normalizado)) == 1
+        ):
+            mostrar_erro("E09", Cor.AMARELO)
+            continue
+
+        return cnpj_normalizado
+
+
+def formatar_cnpj(cnpj_limpo: str) -> str:
+    # O padrão que fatia em 5 grupos
+    padrao = (
+        r"([A-Z0-9]{2})([A-Z0-9]{3})([A-Z0-9]{3})([A-Z0-9]{4})([A-Z0-9]{2})"
+    )
+
+    # A remontagem com a pontuação
+    cnpj_formatado = re.sub(padrao, r"\1.\2.\3/\4-\5", cnpj_limpo)
+
+    return cnpj_formatado
+
+
+def formatar_cpf(cpf_limpo: str) -> str:
+    padrao = r"([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})"
+    cpf_formatado = re.sub(padrao, r"\1.\2.\3-\4", cpf_limpo)
+
+    return cpf_formatado

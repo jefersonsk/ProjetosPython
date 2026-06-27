@@ -1,0 +1,51 @@
+{
+    "bancos": [
+        {
+            "nome_do_banco": "Banco JSK",
+            "cnpj": "12345678901234",
+            "numero_do_banco": 1
+        },
+        {
+            "nome_do_banco": "Didi Bank",
+            "cnpj": "09876543210987",
+            "numero_do_banco": 2
+        }
+    ],
+    "pessoas": [
+        {
+            "nome": "Jeferson",
+            "sobrenome": "Silveira",
+            "cpf": "89868927072",
+            "idade": 50,
+            "contas": [
+                {
+                    "titular": "89868927072",
+                    "banco": 2,
+                    "numero_conta": 1,
+                    "saldo": 1100.0,
+                    "senha": "1234",
+                    "tipo": "conta_corrente",
+                    "taxas_mensais": 15.0
+                },
+                {
+                    "titular": "89868927072",
+                    "banco": 1,
+                    "numero_conta": 1,
+                    "saldo": 500.0,
+                    "senha": "1234",
+                    "tipo": "conta_corrente",
+                    "taxas_mensais": 15.0
+                },
+                {
+                    "titular": "89868927072",
+                    "banco": 1,
+                    "numero_conta": 2,
+                    "saldo": 800.0,
+                    "senha": "1234",
+                    "tipo": "conta_corrente",
+                    "taxas_mensais": 15.0
+                }
+            ]
+        }
+    ]
+}
