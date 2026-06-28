@@ -942,8 +942,8 @@ def main():
         if opcao_escolhida:
             opcao_escolhida(meus_bancos, meus_clientes)
         elif opcao_digitada == 0:
-            imprimir_cabecalho("SISTEMA SENDO ENCERRADO...", cor=Cor.VERDE)
             salvar_dados_json(meus_bancos, meus_clientes)
+            imprimir_cabecalho("SISTEMA SENDO ENCERRADO...", cor=Cor.VERDE)
             break
         else:
             mostrar_erro("E101", Cor.VERMELHO)

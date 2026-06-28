@@ -22,7 +22,7 @@
                     "titular": "89868927072",
                     "banco": 2,
                     "numero_conta": 1,
-                    "saldo": 1100.0,
+                    "saldo": 1085.0,
                     "senha": "1234",
                     "tipo": "conta_corrente",
                     "taxas_mensais": 15.0
@@ -31,7 +31,7 @@
                     "titular": "89868927072",
                     "banco": 1,
                     "numero_conta": 1,
-                    "saldo": 500.0,
+                    "saldo": 485.0,
                     "senha": "1234",
                     "tipo": "conta_corrente",
                     "taxas_mensais": 15.0
@@ -40,7 +40,7 @@
                     "titular": "89868927072",
                     "banco": 1,
                     "numero_conta": 2,
-                    "saldo": 800.0,
+                    "saldo": 785.0,
                     "senha": "1234",
                     "tipo": "conta_corrente",
                     "taxas_mensais": 15.0
